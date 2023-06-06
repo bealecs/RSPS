@@ -1,8 +1,4 @@
-# Elvarg
-Elvarg is a #317 protocol rsps. Server was written from scratch, clean, perfect combat, etc.. Good base to start off with.
+# RSPS
+Runescape Private Server
 
-#317 RSPS Community Server
-Users will have opertunity to contribute to the GitHub Repository for any general fixes, contents, etc.. to better improve the base.
-
-# Release Thread
-https://www.rune-server.ee/runescape-development/rs2-server/downloads/651062-elvarg-131osrs-base-netty-4-1-8-jaggrab-perfect-combat-extremely-stable-release.html
+I found a runescape private server repo that I wanted to clone and work off of myself. This is the type of work that I was doing as a teenager and what initially inspired me to code. It feels like a blast from the past to have found this repo. I will be contributing to this here and there when I have free time.
