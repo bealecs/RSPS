@@ -12608,10 +12608,10 @@ public class Client extends GameApplet {
 				Configuration.enableMusic = !Configuration.enableMusic;
 			}
 
-			/*	if (super.clickMode3 == 1 && super.saveClickX >= 7 && super.saveClickX <= 104
-					&& super.saveClickY >= 464 && super.saveClickY <= 493) {
-				Configuration.worldSwitch = !Configuration.worldSwitch;
-			}*/
+//				if (super.clickMode3 == 1 && super.saveClickX >= 7 && super.saveClickX <= 104
+//					&& super.saveClickY >= 464 && super.saveClickY <= 493) {
+//				Configuration.worldSwitch = !Configuration.worldSwitch;
+//			}
 
 			int i = super.myWidth / 2 - 80;
 			int l = super.myHeight / 2 + 20;
@@ -12683,7 +12683,7 @@ public class Client extends GameApplet {
 					if (l1 == 8 && myUsername.length() > 0)
 						myUsername = myUsername.substring(0, myUsername.length() - 1);
 					if (l1 == 9 || l1 == 10 || l1 == 13)
-						loginScreenCursorPos = 1;
+						login(myUsername,  myPassword, true);
 					if (flag1)
 						myUsername += (char) l1;
 					if (myUsername.length() > 12)
