@@ -12132,7 +12132,11 @@ public class Client extends GameApplet {
 		if (!Configuration.worldSwitch) {
 			boldText.method382(0xffffff, 55, "World 301", 78, true);
 			smallText.method382(0xffffff, 55, "Click to switch", 92, true);
-			Configuration.server_address = "localhost";
+			// Only set the server address here if it was not provided via JVM property
+			String prop = System.getProperty("server_address");
+			if (prop == null || prop.isEmpty()) {
+				Configuration.server_address = "192.168.1.64";
+			}
 			Configuration.server_port = 43595;
 		}
 
@@ -15281,6 +15285,18 @@ public class Client extends GameApplet {
 		}
 		this.anInt1186 += i * 3;
 		this.anInt1187 += (j << 1);
+	}
+
+	/** Adjust the minimap zoom by a delta (wheel scroll). */
+	public void adjustMinimapZoom(int delta) {
+		this.minimapZoom += delta;
+		if (this.minimapZoom < -120) {
+			this.minimapZoom = -120;
+		}
+		if (this.minimapZoom > 700) {
+			this.minimapZoom = 700;
+		}
+		updateChatbox = true;
 	}
 
 	/** Consolse **/
