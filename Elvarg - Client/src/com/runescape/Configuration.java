@@ -23,7 +23,11 @@ public final class Configuration {
 	 * Default can be overridden with the Java system property `server.address`
 	 * or the environment variable `SERVER_ADDRESS`.
 	 */
+<<<<<<< HEAD
+	public static String server_address = "207.214.134.130"; 
+=======
 	public static String server_address = "127.0.0.1"; // localhost
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
 
 	static {
 		// Check both dotted and underscored system properties for compatibility

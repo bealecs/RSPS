@@ -3,8 +3,13 @@
   "password": "tja",
   "staff-rights": "PLAYER",
   "position": {
+<<<<<<< HEAD
+    "x": 3091,
+    "y": 3520,
+=======
     "x": 3087,
     "y": 3493,
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     "z": 0
   },
   "spell-book": "NORMAL",
@@ -15,18 +20,31 @@
   "rigour": false,
   "augury": false,
   "has-veng": false,
+<<<<<<< HEAD
+  "last-veng": -366,
+=======
   "last-veng": 0,
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
   "running": true,
   "run-energy": 100,
   "spec-percentage": 100,
   "recoil-damage": 0,
   "poison-damage": 0,
+<<<<<<< HEAD
+  "poison-immunity": -366,
+  "overload-timer": -366,
+  "fire-immunity": -366,
+  "teleblock-timer": -366,
+  "prayerblock-timer": -366,
+  "skull-timer": -1547,
+=======
   "poison-immunity": 0,
   "overload-timer": 0,
   "fire-immunity": 0,
   "teleblock-timer": 0,
   "prayerblock-timer": 0,
   "skull-timer": -937,
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
   "target-kills": 0,
   "normal-kills": 0,
   "deaths": 0,

@@ -280,40 +280,60 @@ public class GameApplet extends Applet implements Runnable, MouseListener,
 				Client.anInt1089 = scrollPos;
 				Client.updateChatbox = true;
 			}
-		} else if(Client.loggedIn) {
-			
-			/** ZOOMING **/
-			boolean zoom = Client.frameMode == ScreenMode.FIXED ? (mouseX < 512) : (mouseX < Client.frameWidth - 200);
-			if(zoom && Client.openInterfaceId == -1) {
-				Client.cameraZoom += rotation * 35;
-
-				int max_zoom_1 = (Client.frameMode == ScreenMode.FIXED ? -150 : -300);
-				if(Client.cameraZoom < max_zoom_1) {
-					Client.cameraZoom = max_zoom_1;
+		} else if (Client.loggedIn) {
+			// If the wheel is over the minimap, adjust minimap zoom; otherwise adjust camera zoom
+			boolean handled = false;
+			if (Client.instance != null) {
+				int mx = mouseX;
+				int my = mouseY;
+				int dx, dy, cx, cy;
+				if (Client.frameMode == Client.ScreenMode.FIXED) {
+					cx = 94 + 4 + 30; // minimap center X in fixed
+					cy = 83; // minimap center Y in fixed
+				} else {
+					cx = Client.frameWidth - 81; // minimap center X in resizable
+					cy = 85; // minimap center Y in resizable
 				}
-				
-				if(Client.cameraZoom > 1200) {
-					Client.cameraZoom = 1200;
+				dx = mx - cx;
+				dy = my - cy;
+				if (dx * dx + dy * dy <= 76 * 76 && Client.openInterfaceId == -1) {
+					// wheel over minimap -> zoom minimap
+					Client.instance.adjustMinimapZoom(rotation * 20);
+					handled = true;
 				}
-				
-				int setting = 0;
-				
-				if(Client.cameraZoom > 1000) {
-					setting = 4;
-				} else if(Client.cameraZoom > 800) {
-					setting = 3;
-				} else if(Client.cameraZoom > 600) {
-					setting = 2;
-				} else if(Client.cameraZoom > 400) {
-					setting = 1;
-				}				
-				
-				Client.instance.settings[168] = setting;
 			}
-			
-			
-			
-			Client.updateChatbox = true;
+			if (!handled) {
+				boolean zoom = Client.frameMode == ScreenMode.FIXED ? (mouseX < 512)
+						: (mouseX < Client.frameWidth - 200);
+				if (zoom && Client.openInterfaceId == -1) {
+					Client.cameraZoom += rotation * 35;
+
+					int max_zoom_1 = (Client.frameMode == ScreenMode.FIXED ? -150 : -300);
+					if (Client.cameraZoom < max_zoom_1) {
+						Client.cameraZoom = max_zoom_1;
+					}
+
+					if (Client.cameraZoom > 1200) {
+						Client.cameraZoom = 1200;
+					}
+
+					int setting = 0;
+
+					if (Client.cameraZoom > 1000) {
+						setting = 4;
+					} else if (Client.cameraZoom > 800) {
+						setting = 3;
+					} else if (Client.cameraZoom > 600) {
+						setting = 2;
+					} else if (Client.cameraZoom > 400) {
+						setting = 1;
+					}
+
+					Client.instance.settings[168] = setting;
+				}
+
+				Client.updateChatbox = true;
+			}
 		}
 		
 		

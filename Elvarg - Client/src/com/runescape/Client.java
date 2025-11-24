@@ -12203,11 +12203,24 @@ public class Client extends GameApplet {
 		loginScreenAccessories.drawGraphics(400, super.graphics, 0);
 		loginScreenAccessories.initDrawingArea();
 		cacheSprite[57].drawSprite(6, 63);
+<<<<<<< HEAD
+		if (!Configuration.worldSwitch) {
+			boldText.method382(0xffffff, 55, "World 301", 78, true);
+			smallText.method382(0xffffff, 55, "Click to switch", 92, true);
+			// Only set the server address here if it was not provided via JVM property
+			String prop = System.getProperty("server_address");
+			if (prop == null || prop.isEmpty()) {
+				Configuration.server_address = "192.168.1.64";
+			}
+			Configuration.server_port = 43595;
+		}
+=======
 		   if (!Configuration.worldSwitch) {
 			   boldText.method382(0xffffff, 55, "World 301", 78, true);
 			   smallText.method382(0xffffff, 55, "Click to switch", 92, true);
 			   // Configuration.server_address and server_port are now set in Configuration.java
 		   }
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
 
 		loginMusicImageProducer.drawGraphics(265, super.graphics, 562);
 		loginMusicImageProducer.initDrawingArea();
@@ -15358,6 +15371,18 @@ public class Client extends GameApplet {
 		}
 		this.anInt1186 += i * 3;
 		this.anInt1187 += (j << 1);
+	}
+
+	/** Adjust the minimap zoom by a delta (wheel scroll). */
+	public void adjustMinimapZoom(int delta) {
+		this.minimapZoom += delta;
+		if (this.minimapZoom < -120) {
+			this.minimapZoom = -120;
+		}
+		if (this.minimapZoom > 700) {
+			this.minimapZoom = 700;
+		}
+		updateChatbox = true;
 	}
 
 	/** Consolse **/
