@@ -325,60 +325,15 @@ public final class Widget {
 		mainTeleports();
 		normalSpellbookEdit(textDrawingAreas);
 		ancientSpellbookEdit(textDrawingAreas);
-		settingsTab();
+		settingsTab(textDrawingAreas);
 
 		//specialBars();
 		
 		spriteCache = null;
 	}
 
-	public static void settingsTab() {
-		Widget p = addTabInterface(42500);
-
-		//Removing adjust bars such as music/sounds
-		int[] to_remove = {19131, 19149, 19157, 22635, 941, 942, 943, 944, 945, 19150, 19151, 19152, 19153, 19154, 19155};
-		for(int i : to_remove) {
-			removeSomething(i);
-		}
-
-		for(int i : new int[]{930, 931, 932, 933, 934, 22634}) {
-			interfaceCache[i].tooltip
-			= interfaceCache[i].defaultText = "Adjust Camera Zoom";
-		}
-
-		//Adding zoom image
-		addSpriteLoader(42508, 189);
-
-		//Adding key bindings image
-		addSpriteLoader(42510, 190);
-		addButton(42511, 42500, 30, 30, interfaceCache[19156].disabledSprite, interfaceCache[19156].enabledSprite, -1, "Adjust Key bindings");
-		removeSomething(19156); //Removes house button
-
-		//Adding screen sizes
-		addButton(42501, 42500, 54, 46, 185, 186, 42502, "Fixed Screen");
-		addHoveredButton_sprite_loader(42502, 186, 54, 46, 42503);
-
-		addButton(42504, 42500, 54, 46, 187, 188, 42505, "Resized Screen");
-		addHoveredButton_sprite_loader(42505, 188, 54, 46, 42506);
-
-		p.totalChildren(8);
-
-		//Screen sizes
-		setBounds(42501, 30, 95, 0, p);
-		setBounds(42502, 30, 95, 1, p);
-		setBounds(42504, 110, 95, 2, p);
-		setBounds(42505, 110, 95, 3, p);
-
-		//Camera zoom image
-		setBounds(42508, 10, 49, 4, p);
-
-		//key bindings images
-		setBounds(42511, 132, 212, 5, p);
-		setBounds(42510, 136, 215, 6, p);
-
-		//Main settings interface
-		setBounds(904, 0, 0, 7, p);
-
+	public static void settingsTab(GameFont[] gameFont) {
+		
 	}
 
 	public static void mainTeleports() {
@@ -1017,7 +972,7 @@ public final class Widget {
 		Widget rsinterface = interfaceCache[3900];
 		rsinterface.inventoryItemId = new int[42];
 		rsinterface.inventoryAmounts = new int[42];
-		rsinterface.drawInfinity = true;
+		rsinterface.drawInfinity = false; // Show prices instead of infinity symbol
 		rsinterface.width = 10;
 		rsinterface.height = 4;
 		rsinterface.spritePaddingX = 15;
@@ -1062,15 +1017,16 @@ public final class Widget {
 		addText(23325, "Deaths: 0", TDA, 0, 0xFFFF33, true, false);
 
 		tab.totalChildren(18);
-		tab.child(0, 23301, 319, 8);
-		tab.child(1, 23322, 319, 54);
+		// Repositioned for top-left corner
+		tab.child(0, 23301, 5, 8);
+		tab.child(1, 23322, 5, 54);
 		//  tab.child(1, 23302, 339, 56);
-		tab.child(2, 23303, 345, 65);
+		tab.child(2, 23303, 31, 65);
 		// tab.child(2, 23304, 348, 73);
-		tab.child(3, 23305, 358, 84);
-		tab.child(4, 23306, 455, 58);
-		tab.child(5, 23307, 456, 71);
-		tab.child(6, 23308, 457, 87);
+		tab.child(3, 23305, 44, 84);
+		tab.child(4, 23306, 141, 58);
+		tab.child(5, 23307, 142, 71);
+		tab.child(6, 23308, 143, 87);
 		//  tab.child(8, 23309, 460, 59);
 		//  tab.child(9, 23310, 438, 72);
 		//  tab.child(10, 23311, 481, 72);
@@ -1078,21 +1034,21 @@ public final class Widget {
 		//  tab.child(12, 23313, 481, 85);
 		//  tab.child(13, 23314, 393, 72);
 		//  tab.child(14, 23315, 394, 85);
-		tab.child(7, 23316, 345, 65);
-		tab.child(8, 23317, 345, 65);
-		tab.child(9, 23318, 345, 65);
-		tab.child(10, 23319, 345, 65);
-		tab.child(11, 23320, 345, 65);	 
+		tab.child(7, 23316, 31, 65);
+		tab.child(8, 23317, 31, 65);
+		tab.child(9, 23318, 31, 65);
+		tab.child(10, 23319, 31, 65);
+		tab.child(11, 23320, 31, 65);	 
 
-		tab.child(12, 23323, 435, 13);
-		tab.child(13, 23324, 435, 26);
-		tab.child(14, 23325, 435, 39);
+		tab.child(12, 23323, 121, 13);
+		tab.child(13, 23324, 121, 26);
+		tab.child(14, 23325, 121, 39);
 
 		interfaceCache[197].childX[0] = 0;
 		interfaceCache[197].childY[0] = 0;
 
-		tab.child(15, 197, 331, 13);
-		tab.child(16, 23321, 361, 38);
+		tab.child(15, 197, 17, 13);
+		tab.child(16, 23321, 47, 38);
 
 		tab.child(17, 38000, 0, 0);
 
@@ -2106,6 +2062,30 @@ public final class Widget {
 		tab.secondaryColor = 0;
 		tab.defaultHoverColor = 0;
 		tab.secondaryHoverColor = 0;
+	}
+
+	public static void addActionButton(int id, String text, String tooltip, GameFont tda[], int idx, int color, int hoverColor, boolean center, boolean shadow) {
+		Widget tab = addTabInterface(id);
+		tab.parent = id;
+		tab.id = id;
+		tab.type = 4;
+		tab.atActionType = 1;
+		tab.width = 0;
+		tab.height = 11;
+		tab.contentType = 0;
+		tab.opacity = 0;
+		tab.hoverType = -1;
+		tab.centerText = center;
+		tab.textShadow = shadow;
+		tab.textDrawingAreas = tda[idx];
+		tab.defaultText = text;
+		tab.secondaryText = "";
+		tab.textColor = color;
+		tab.secondaryColor = 0;
+		tab.defaultHoverColor = hoverColor;
+		tab.secondaryHoverColor = 0;
+		tab.tooltip = tooltip;
+		tab.defaultText = text;
 	}
 
 	public static void addText(int i, String s, int k, boolean l, boolean m, int a, GameFont[] TDA, int j) {

@@ -36,7 +36,7 @@ public class Bank extends ItemContainer {
 	}
 
 	public Bank open() {
-
+		
 		// Update player status
 		getPlayer().setStatus(PlayerStatus.BANKING).setEnterSyntax(null);
 

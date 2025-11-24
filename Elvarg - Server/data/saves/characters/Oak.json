@@ -3,8 +3,13 @@
   "password": "tja",
   "staff-rights": "ADMINISTRATOR",
   "position": {
+<<<<<<< HEAD
     "x": 3006,
     "y": 3619,
+=======
+    "x": 2322,
+    "y": 3804,
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     "z": 0
   },
   "spell-book": "NORMAL",
@@ -15,26 +20,44 @@
   "rigour": false,
   "augury": false,
   "has-veng": false,
+<<<<<<< HEAD
   "last-veng": -9268,
+=======
+  "last-veng": -3855,
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
   "running": true,
   "run-energy": 100,
   "spec-percentage": 100,
   "recoil-damage": 0,
   "poison-damage": 0,
+<<<<<<< HEAD
   "poison-immunity": -9268,
   "overload-timer": -9268,
   "fire-immunity": -9268,
   "teleblock-timer": -9268,
   "prayerblock-timer": -9268,
   "skull-timer": 140,
+=======
+  "poison-immunity": -3855,
+  "overload-timer": -3855,
+  "fire-immunity": -3855,
+  "teleblock-timer": -3855,
+  "prayerblock-timer": -3855,
+  "skull-timer": -145195,
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
   "target-kills": 0,
   "normal-kills": 1,
   "deaths": 0,
   "pkp": 0,
   "inventory": [
     {
+<<<<<<< HEAD
       "id": -1,
       "amount": 0,
+=======
+      "id": 995,
+      "amount": 2147011000,
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
       "slot": 0
     },
     {
@@ -312,10 +335,17 @@
       99
     ],
     "experience": [
+<<<<<<< HEAD
       13034541,
       13034431,
       13034431,
       13034497,
+=======
+      13034503,
+      13034431,
+      13034431,
+      13034473,
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
       13034431,
       13034431,
       13034431,

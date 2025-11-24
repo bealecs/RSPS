@@ -255,10 +255,9 @@ public class Player extends Character {
 		getPacketSender().sendInterfaceRemoval();
 		ClanChatManager.leave(this, false);
 		Locations.logout(this);
-		TaskManager.cancelTasks(this);
-		save();
-
-		// Send and queue the logout. Also close channel!
+	TaskManager.cancelTasks(this);
+	
+	save();		// Send and queue the logout. Also close channel!
 		getPacketSender().sendLogout();
 		session.setState(SessionState.LOGGED_OUT);
 		if (getSession().getChannel().isOpen()) {
@@ -310,7 +309,7 @@ public class Player extends Character {
 		// Refresh item containers..
 		getInventory().refreshItems();
 		getEquipment().refreshItems();
-
+		
 		// Interaction options on right click...
 		getPacketSender().sendInteractionOption("Attack", 2, true);
 		getPacketSender().sendInteractionOption("Follow", 3, false);

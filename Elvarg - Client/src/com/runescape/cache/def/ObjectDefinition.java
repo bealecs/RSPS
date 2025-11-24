@@ -98,8 +98,9 @@ public final class ObjectDefinition {
 				|| id == 1533 || id == 17089 || id == 1600 || id == 1601 || id == 11707 || id == 24376 || id == 24378
 				|| id == 40108 || id == 59 || id == 2069 || id == 36846;
 		if (objectDef.name != null) {
-			if (objectDef.name.toLowerCase().contains(("door")) || objectDef.name.toLowerCase().contains(("gate"))
-					|| objectDef.name.toLowerCase().contains(("ditch"))) {
+			// Don't remove wilderness ditch (ID 23271) - it must remain solid so players are forced to jump over it
+			if (id != 23271 && (objectDef.name.toLowerCase().contains(("door")) || objectDef.name.toLowerCase().contains(("gate"))
+					|| objectDef.name.toLowerCase().contains(("ditch")))) {
 				removeObject = true;
 			}
 		}

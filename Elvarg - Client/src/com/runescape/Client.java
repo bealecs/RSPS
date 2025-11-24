@@ -953,7 +953,14 @@ public class Client extends GameApplet {
 			setHighMem();
 			isMembers = true;
 			SignLink.storeid = 32;
-			SignLink.startpriv(InetAddress.getLocalHost());
+			try {
+				SignLink.startpriv(InetAddress.getByName(Configuration.server_address));
+			} catch (Exception e) {
+				try {
+					SignLink.startpriv(InetAddress.getLocalHost());
+				} catch (Exception ex) {
+				}
+			}
 			initClientFrame(frameWidth, frameHeight);
 			instance = this;
 		} catch (Exception exception) {
@@ -3744,7 +3751,14 @@ public class Client extends GameApplet {
 			setHighMem();
 			isMembers = true;
 			SignLink.storeid = 32;
-			SignLink.startpriv(InetAddress.getLocalHost());
+			try {
+				SignLink.startpriv(InetAddress.getByName(Configuration.server_address));
+			} catch (Exception e) {
+				try {
+					SignLink.startpriv(InetAddress.getLocalHost());
+				} catch (Exception ex) {
+				}
+			}
 			frameMode(ScreenMode.FIXED);
 			instance = new Client();
 			instance.createClientFrame(frameWidth, frameHeight);
@@ -4913,6 +4927,55 @@ public class Client extends GameApplet {
 
 				case 42504:
 					frameMode(ScreenMode.RESIZABLE);
+					break;
+
+				//Music volume controls
+				case 42520: //Music 4
+					if (SignLink.music != null) {
+						adjustVolume(true, 500);
+					}
+					Configuration.enableMusic = true;
+					break;
+				case 42523: //Music 3
+					if (SignLink.music != null) {
+						adjustVolume(true, 300);
+					}
+					Configuration.enableMusic = true;
+					break;
+				case 42526: //Music 2
+					if (SignLink.music != null) {
+						adjustVolume(true, 100);
+					}
+					Configuration.enableMusic = true;
+					break;
+				case 42529: //Music 1
+					if (SignLink.music != null) {
+						adjustVolume(true, 0);
+					}
+					Configuration.enableMusic = true;
+					break;
+				case 42532: //Music Off
+					Configuration.enableMusic = false;
+					if (!lowMemory) {
+						stopMidi();
+					}
+					break;
+
+				//Sound effects volume controls
+				case 42560: //Sound 4
+					SoundPlayer.setVolume(4);
+					break;
+				case 42563: //Sound 3
+					SoundPlayer.setVolume(3);
+					break;
+				case 42566: //Sound 2
+					SoundPlayer.setVolume(2);
+					break;
+				case 42569: //Sound 1
+					SoundPlayer.setVolume(1);
+					break;
+				case 42572: //Sound Off
+					SoundPlayer.setVolume(0);
 					break;
 
 				default:
@@ -8651,7 +8714,7 @@ public class Client extends GameApplet {
 				Jaggrab.preload();
 			}
 			
-			titleArchive = createArchive(Jaggrab.TITLE_CRC, "title screen", "title", Jaggrab.CRCs[Jaggrab.TITLE_CRC], 25);        
+			titleArchive = createArchive(Jaggrab.TITLE_CRC, "title screen", "title", Configuration.JAGCACHED_ENABLED ? Jaggrab.CRCs[Jaggrab.TITLE_CRC] : 0, 25);        
 			smallText = new GameFont(false, "p11_full", titleArchive);
 			regularText = new GameFont(false, "p12_full", titleArchive);
 			boldText = new GameFont(false, "b12_full", titleArchive);
@@ -8663,15 +8726,15 @@ public class Client extends GameApplet {
 			
 			drawLogo();
 			loadTitleScreen();
-			FileArchive configArchive = createArchive(Jaggrab.CONFIG_CRC, "config", "config", Jaggrab.CRCs[Jaggrab.CONFIG_CRC], 30);                  
-			FileArchive interfaceArchive = createArchive(Jaggrab.INTERFACE_CRC, "interface", "interface", Jaggrab.CRCs[Jaggrab.INTERFACE_CRC], 35);                  
-			FileArchive mediaArchive = createArchive(Jaggrab.MEDIA_CRC, "2d graphics", "media", Jaggrab.CRCs[Jaggrab.MEDIA_CRC], 40);
-			FileArchive streamLoader_6 = createArchive(Jaggrab.UPDATE_CRC, "update list", "versionlist", Jaggrab.CRCs[Jaggrab.UPDATE_CRC], 60);
+			FileArchive configArchive = createArchive(Jaggrab.CONFIG_CRC, "config", "config", Configuration.JAGCACHED_ENABLED ? Jaggrab.CRCs[Jaggrab.CONFIG_CRC] : 0, 30);                  
+			FileArchive interfaceArchive = createArchive(Jaggrab.INTERFACE_CRC, "interface", "interface", Configuration.JAGCACHED_ENABLED ? Jaggrab.CRCs[Jaggrab.INTERFACE_CRC] : 0, 35);                  
+			FileArchive mediaArchive = createArchive(Jaggrab.MEDIA_CRC, "2d graphics", "media", Configuration.JAGCACHED_ENABLED ? Jaggrab.CRCs[Jaggrab.MEDIA_CRC] : 0, 40);
+			FileArchive streamLoader_6 = createArchive(Jaggrab.UPDATE_CRC, "update list", "versionlist", Configuration.JAGCACHED_ENABLED ? Jaggrab.CRCs[Jaggrab.UPDATE_CRC] : 0, 60);
 			this.mediaStreamLoader = mediaArchive; 
-			FileArchive textureArchive = createArchive(Jaggrab.TEXTURES_CRC, "textures", "textures", Jaggrab.CRCs[Jaggrab.TEXTURES_CRC], 45);
-			FileArchive wordencArchive = createArchive(Jaggrab.CHAT_CRC, "chat system", "wordenc", Jaggrab.CRCs[Jaggrab.CHAT_CRC], 50);
+			FileArchive textureArchive = createArchive(Jaggrab.TEXTURES_CRC, "textures", "textures", Configuration.JAGCACHED_ENABLED ? Jaggrab.CRCs[Jaggrab.TEXTURES_CRC] : 0, 45);
+			FileArchive wordencArchive = createArchive(Jaggrab.CHAT_CRC, "chat system", "wordenc", Configuration.JAGCACHED_ENABLED ? Jaggrab.CRCs[Jaggrab.CHAT_CRC] : 0, 50);
 			
-			FileArchive soundArchive = createArchive(Jaggrab.SOUNDS_CRC, "sound effects", "sounds", Jaggrab.CRCs[Jaggrab.SOUNDS_CRC], 55);
+			FileArchive soundArchive = createArchive(Jaggrab.SOUNDS_CRC, "sound effects", "sounds", Configuration.JAGCACHED_ENABLED ? Jaggrab.CRCs[Jaggrab.SOUNDS_CRC] : 0, 55);
 				
 			tileFlags = new byte[4][104][104];
 			tileHeights = new int[4][105][105];
@@ -8724,11 +8787,18 @@ public class Client extends GameApplet {
 				CacheUtils.dumpCacheIndex(this, Store.MAP);
 			}
 
-			SpriteLoader.loadSprites();
-			cacheSprite = SpriteLoader.getSprites();
-			this.hp = cacheSprite[40];
 
-			for (int imageId = 73, index = 0; index < SkillConstants.SKILL_COUNT; imageId++, index++) {
+		SpriteLoader.loadSprites();
+		cacheSprite = SpriteLoader.getSprites();
+		
+		//Remove makeover interface sprites to prevent them from showing up
+		for(int i = 185; i <= 188; i++) {
+			if(cacheSprite[i] != null) {
+				cacheSprite[i] = null;
+			}
+		}
+		
+		this.hp = cacheSprite[40];			for (int imageId = 73, index = 0; index < SkillConstants.SKILL_COUNT; imageId++, index++) {
 				skill_sprites[index] = cacheSprite[imageId];
 			}
 
@@ -10780,6 +10850,10 @@ public class Client extends GameApplet {
 			} else if (openWalkableInterface == 201 && frameMode != ScreenMode.FIXED) {
 				drawInterface(0, frameWidth - 560,
 						Widget.interfaceCache[openWalkableInterface], -109);
+			} else if (openWalkableInterface == 23300) {
+				// Bounty hunter interface - position in top-left corner for all modes
+				drawInterface(0, 0,
+						Widget.interfaceCache[openWalkableInterface], 0);
 			} else {
 				drawInterface(0, frameMode == ScreenMode.FIXED ? 0 : (frameWidth / 2) - 356,
 						Widget.interfaceCache[openWalkableInterface],
@@ -12129,6 +12203,7 @@ public class Client extends GameApplet {
 		loginScreenAccessories.drawGraphics(400, super.graphics, 0);
 		loginScreenAccessories.initDrawingArea();
 		cacheSprite[57].drawSprite(6, 63);
+<<<<<<< HEAD
 		if (!Configuration.worldSwitch) {
 			boldText.method382(0xffffff, 55, "World 301", 78, true);
 			smallText.method382(0xffffff, 55, "Click to switch", 92, true);
@@ -12139,6 +12214,13 @@ public class Client extends GameApplet {
 			}
 			Configuration.server_port = 43595;
 		}
+=======
+		   if (!Configuration.worldSwitch) {
+			   boldText.method382(0xffffff, 55, "World 301", 78, true);
+			   smallText.method382(0xffffff, 55, "Click to switch", 92, true);
+			   // Configuration.server_address and server_port are now set in Configuration.java
+		   }
+>>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
 
 		loginMusicImageProducer.drawGraphics(265, super.graphics, 562);
 		loginMusicImageProducer.initDrawingArea();
@@ -12686,7 +12768,9 @@ public class Client extends GameApplet {
 				if (loginScreenCursorPos == 0) {
 					if (l1 == 8 && myUsername.length() > 0)
 						myUsername = myUsername.substring(0, myUsername.length() - 1);
-					if (l1 == 9 || l1 == 10 || l1 == 13)
+					if (l1 == 9)
+						loginScreenCursorPos = 1; // Tab to password field
+					if (l1 == 10 || l1 == 13)
 						login(myUsername,  myPassword, true);
 					if (flag1)
 						myUsername += (char) l1;
@@ -12695,8 +12779,10 @@ public class Client extends GameApplet {
 				} else if (loginScreenCursorPos == 1) {
 					if (l1 == 8 && myPassword.length() > 0)
 						myPassword = myPassword.substring(0, myPassword.length() - 1);
-					if (l1 == 9 || l1 == 10 || l1 == 13)
-						loginScreenCursorPos = 0;
+					if (l1 == 9)
+						loginScreenCursorPos = 0; // Tab back to username field
+					if (l1 == 10 || l1 == 13)
+						login(myUsername,  myPassword, true);
 					if (flag1)
 						myPassword += (char) l1;
 					if (myPassword.length() > 20)
@@ -14802,8 +14888,8 @@ public class Client extends GameApplet {
 		constructedViewport = false;
 		oriented = false;
 		anInt1171 = 1;
-		myUsername = "Oak";
-		myPassword = "tja";
+		myUsername = "";
+		myPassword = "";
 		genericLoadingError = false;
 		reportAbuseInterfaceID = -1;
 		spawns = new Deque();
