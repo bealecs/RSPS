@@ -171,6 +171,7 @@ public class ButtonClickPacketListener implements PacketListener {
 				player.getDialogueOptions().handleOption5(player);
 			}
 			break;
+			
 		default:
 			// player.getPacketSender().sendMessage("Player
 			// "+player.getUsername()+", click button: "+button);

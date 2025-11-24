@@ -4,7 +4,7 @@
   "staff-rights": "ADMINISTRATOR",
   "position": {
     "x": 2322,
-    "y": 3805,
+    "y": 3804,
     "z": 0
   },
   "spell-book": "NORMAL",
@@ -15,18 +15,18 @@
   "rigour": false,
   "augury": false,
   "has-veng": false,
-  "last-veng": -3723,
+  "last-veng": -3855,
   "running": true,
   "run-energy": 100,
   "spec-percentage": 100,
   "recoil-damage": 0,
   "poison-damage": 0,
-  "poison-immunity": -3723,
-  "overload-timer": -3723,
-  "fire-immunity": -3723,
-  "teleblock-timer": -3723,
-  "prayerblock-timer": -3723,
-  "skull-timer": -144975,
+  "poison-immunity": -3855,
+  "overload-timer": -3855,
+  "fire-immunity": -3855,
+  "teleblock-timer": -3855,
+  "prayerblock-timer": -3855,
+  "skull-timer": -145195,
   "target-kills": 0,
   "normal-kills": 0,
   "deaths": 0,
@@ -34,7 +34,7 @@
   "inventory": [
     {
       "id": 995,
-      "amount": 1000,
+      "amount": 2147011000,
       "slot": 0
     },
     {
@@ -312,10 +312,10 @@
       99
     ],
     "experience": [
+      13034503,
       13034431,
       13034431,
-      13034431,
-      13034431,
+      13034473,
       13034431,
       13034431,
       13034431,

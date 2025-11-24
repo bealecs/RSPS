@@ -19,11 +19,33 @@ public final class Configuration {
 	public static boolean client_debug = true;
 
 	/**
-	 * The address of the server that the client will be connecting to
+	 * The address of the server that the client will be connecting to.
+	 * Default can be overridden with the Java system property `server.address`
+	 * or the environment variable `SERVER_ADDRESS`.
 	 */
-	public static String server_address = "localhost"; // 149.56.164.17
+	public static String server_address = "127.0.0.1"; // localhost
 
-	public static final String CACHE_DIRECTORY = System.getProperty("user.home") + File.separator + "Cache/";
+	static {
+		// Check both dotted and underscored system properties for compatibility
+		String prop = System.getProperty("server.address");
+		if ((prop == null || prop.isEmpty())) {
+			prop = System.getProperty("server_address");
+		}
+		if (prop != null && !prop.isEmpty()) {
+			server_address = prop;
+		} else {
+			// Fallback to environment vars
+			String env = System.getenv("SERVER_ADDRESS");
+			if (env == null || env.isEmpty()) {
+				env = System.getenv("SERVER_ADDRESS_UNDERSCORE");
+			}
+			if (env != null && !env.isEmpty()) {
+				server_address = env;
+			}
+		}
+	}
+
+	public static final String CACHE_DIRECTORY = "./Cache/";
 
 	/**
 	 * The port of the server that the client will be connecting to
@@ -34,7 +56,7 @@ public final class Configuration {
 	public static final int JAGGRAB_PORT = 43596;
 	public static final int FILE_SERVER_PORT = 43597;
 
-	public static boolean JAGCACHED_ENABLED = true;
+	public static boolean JAGCACHED_ENABLED = false;
 
 	/**
 	 * Toggles a security feature called RSA to prevent packet sniffers

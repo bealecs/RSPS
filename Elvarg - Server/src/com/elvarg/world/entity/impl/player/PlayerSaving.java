@@ -77,19 +77,17 @@ public class PlayerSaving {
 			object.add("friends", builder.toJsonTree(player.getRelations().getFriendList().toArray()));
 			object.add("ignores", builder.toJsonTree(player.getRelations().getIgnoreList().toArray()));
 
-			for (int i = 0; i < player.getBanks().length; i++) {
-				if (i == Bank.BANK_SEARCH_TAB_INDEX) {
-					continue;
-				}
-				if (player.getBank(i) != null) {
-					object.add("bank-" + i, builder.toJsonTree(player.getBank(i).getValidItems()));
-				}
+		for (int i = 0; i < player.getBanks().length; i++) {
+			if (i == Bank.BANK_SEARCH_TAB_INDEX) {
+				continue;
 			}
+			if (player.getBank(i) != null) {
+				object.add("bank-" + i, builder.toJsonTree(player.getBank(i).getValidItems()));
+			}
+		}
 
-			writer.write(builder.toJson(object));
-			writer.close();
-
-		} catch (Exception e) {
+		writer.write(builder.toJson(object));
+		writer.close();		} catch (Exception e) {
 			// An error happened while saving.
 			Elvarg.getLogger().log(Level.WARNING, "An error has occured while saving a character file!", e);
 		}

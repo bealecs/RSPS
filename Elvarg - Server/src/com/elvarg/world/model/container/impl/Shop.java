@@ -511,7 +511,7 @@ public class Shop extends ItemContainer {
 
 			// Sending shop items
 			player.getPacketSender().sendItemContainer(player.getInventory(), INVENTORY_INTERFACE_ID);
-			player.getPacketSender().sendItemContainer(ShopDefinition.getShops().get(getDefinition().getId()),
+			player.getPacketSender().sendShopItemContainer(ShopDefinition.getShops().get(getDefinition().getId()),
 					ITEM_CHILD_ID);
 
 			// Sending shop name

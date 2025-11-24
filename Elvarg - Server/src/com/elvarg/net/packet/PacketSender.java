@@ -524,6 +524,28 @@ public class PacketSender {
 		return this;
 	}
 
+	public PacketSender sendShopItemContainer(ItemContainer container, int interfaceId) {
+
+		PacketBuilder out = new PacketBuilder(53);
+
+		out.putInt(interfaceId);
+		out.putShort(container.capacity());
+
+		for (Item item : container.getItems()) {
+			if (item == null || item.getAmount() <= 0) {
+				out.putInt(0);
+				continue;
+			}
+			// Send item price instead of amount for shops
+			int price = item.getDefinition().getValue();
+			out.putInt(price);
+			out.putShort(item.getId() + 1);
+		}
+
+		player.getSession().write(out);
+		return this;
+	}
+
 	public PacketSender sendCurrentBankTab(int current_tab) {
 		PacketBuilder out = new PacketBuilder(55);
 		out.put(current_tab);
