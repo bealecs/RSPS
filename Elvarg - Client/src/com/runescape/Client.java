@@ -2290,39 +2290,35 @@ public class Client extends GameApplet {
 			boolean previousPlayingMusic = Configuration.enableMusic;
 
 			if (state == 0) {
-
+				Configuration.enableMusic = true;
 				if (SignLink.music != null) {
 					adjustVolume(Configuration.enableMusic, 500);
 				}
-
-				Configuration.enableMusic = true;
 			}
 			if (state == 1) {
-
-				if (SignLink.music != null) {
-					adjustVolume(Configuration.enableMusic, 300);
-				}
-
 				Configuration.enableMusic = true;
+				if (SignLink.music != null) {
+					adjustVolume(Configuration.enableMusic, 350);
+				}
 			}
 			if (state == 2) {
-
+				Configuration.enableMusic = true;
+				if (SignLink.music != null) {
+					adjustVolume(Configuration.enableMusic, 200);
+				}
+			}
+			if (state == 3) {
+				Configuration.enableMusic = true;
 				if (SignLink.music != null) {
 					adjustVolume(Configuration.enableMusic, 100);
 				}
-
-				Configuration.enableMusic = true;
 			}
-			if (state == 3) {
-
-				if (SignLink.music != null) {
-					adjustVolume(Configuration.enableMusic, 0);
-				}
-
-				Configuration.enableMusic = true;
-			}
-			if (state == 4)
+			if (state == 4) {
 				Configuration.enableMusic = false;
+				if (SignLink.music != null) {
+					adjustVolume(false, 0);
+				}
+			}
 			if (Configuration.enableMusic != previousPlayingMusic && !lowMemory) {
 				if (Configuration.enableMusic) {
 					nextSong = currentSong;
@@ -2338,12 +2334,11 @@ public class Client extends GameApplet {
 		if (parameter == 4) {
 			SoundPlayer.setVolume(state);
 			if (state == 0) {
-				aBoolean848 = true;
-				setWaveVolume(0);
+				aBoolean848 = false;
 			}
 			if (state == 1) {
 				aBoolean848 = true;
-				setWaveVolume(-400);
+				setWaveVolume(-1200);
 			}
 			if (state == 2) {
 				aBoolean848 = true;
@@ -2351,10 +2346,12 @@ public class Client extends GameApplet {
 			}
 			if (state == 3) {
 				aBoolean848 = true;
-				setWaveVolume(-1200);
+				setWaveVolume(-400);
 			}
-			if (state == 4)
-				aBoolean848 = false;
+			if (state == 4) {
+				aBoolean848 = true;
+				setWaveVolume(0);
+			}
 		}
 
 		if (parameter == 5) {
@@ -5498,21 +5495,14 @@ public class Client extends GameApplet {
 			// button click
 
 			switch(button) {
-			case 930:
-				Client.cameraZoom = 1200;
+			// Display options tab - Screen resize
+			case 15203: // Fixed mode button
+				frameMode(ScreenMode.FIXED);
 				break;
-			case 931:
-				Client.cameraZoom = 800;
+			case 15205: // Resizable mode button
+				frameMode(ScreenMode.RESIZABLE);
 				break;
-			case 932:
-				Client.cameraZoom = 400;
-				break;
-			case 933:
-				Client.cameraZoom = 200;
-				break;
-			case 934:
-				Client.cameraZoom = 0;
-				break;
+			// Zoom controls removed from settings tab
 			case 32506:
 				bankTabShow = BankTabShow.FIRST_ITEM_IN_TAB;
 				break;
@@ -7649,6 +7639,20 @@ public class Client extends GameApplet {
 		gameScreenImageProducer = new ProducingGraphicsBuffer(512, 334);// gamescreen
 		Rasterizer2D.clear();
 		chatSettingImageProducer = new ProducingGraphicsBuffer(249, 45);
+		
+		// Initialize default settings values for sliders to show on first login
+		// Find the varp ID for brightness (parameter 1) and set default state
+		for (int i = 0; i < 2000; i++) {
+			if (VariablePlayer.variables[i] != null && VariablePlayer.variables[i].getActionId() == 1) {
+				// Brightness: set to state 2 (medium-bright, 0.8 brightness)
+				if (settings[i] == 0) {
+					settings[i] = 2;
+					updateVarp(i);
+				}
+				break;
+			}
+		}
+		
 		welcomeScreenRaised = true;
 	}
 
@@ -12203,24 +12207,11 @@ public class Client extends GameApplet {
 		loginScreenAccessories.drawGraphics(400, super.graphics, 0);
 		loginScreenAccessories.initDrawingArea();
 		cacheSprite[57].drawSprite(6, 63);
-<<<<<<< HEAD
 		if (!Configuration.worldSwitch) {
 			boldText.method382(0xffffff, 55, "World 301", 78, true);
 			smallText.method382(0xffffff, 55, "Click to switch", 92, true);
-			// Only set the server address here if it was not provided via JVM property
-			String prop = System.getProperty("server_address");
-			if (prop == null || prop.isEmpty()) {
-				Configuration.server_address = "192.168.1.64";
-			}
-			Configuration.server_port = 43595;
+			// Configuration.server_address and server_port are now set in Configuration.java
 		}
-=======
-		   if (!Configuration.worldSwitch) {
-			   boldText.method382(0xffffff, 55, "World 301", 78, true);
-			   smallText.method382(0xffffff, 55, "Click to switch", 92, true);
-			   // Configuration.server_address and server_port are now set in Configuration.java
-		   }
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
 
 		loginMusicImageProducer.drawGraphics(265, super.graphics, 562);
 		loginMusicImageProducer.initDrawingArea();

@@ -1,15 +1,10 @@
 {
   "username": "Paul",
   "password": "tja",
-  "staff-rights": "ADMINISTRATOR",
+  "staff-rights": "PLAYER",
   "position": {
-<<<<<<< HEAD
-    "x": 3095,
-    "y": 3505,
-=======
-    "x": 3093,
-    "y": 3494,
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
+    "x": 3094,
+    "y": 3493,
     "z": 0
   },
   "spell-book": "NORMAL",
@@ -20,61 +15,24 @@
   "rigour": false,
   "augury": false,
   "has-veng": false,
-<<<<<<< HEAD
-  "last-veng": -42189,
-=======
-<<<<<<< HEAD
-  "last-veng": -349,
-=======
-  "last-veng": -42177,
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
->>>>>>> 76cab8347887a357f8e4f54d9705199fa65221b6
+  "last-veng": -43293,
   "running": true,
   "run-energy": 100,
   "spec-percentage": 100,
   "recoil-damage": 0,
   "poison-damage": 0,
-<<<<<<< HEAD
-  "poison-immunity": -42189,
-  "overload-timer": -42189,
-  "fire-immunity": -42189,
-  "teleblock-timer": -42189,
-  "prayerblock-timer": -42189,
-  "skull-timer": -48841,
-=======
-<<<<<<< HEAD
-  "poison-immunity": 0,
-  "overload-timer": 0,
-  "fire-immunity": 0,
-  "teleblock-timer": 0,
-  "prayerblock-timer": 0,
-  "skull-timer": -364,
-  "target-kills": 0,
-  "normal-kills": 0,
-  "deaths": 1,
-  "pkp": 0,
-  "inventory": [
-    {
-      "id": 995,
-      "amount": 1,
-      "slot": 0
-    },
-    {
-=======
-  "poison-immunity": -42177,
-  "overload-timer": -42177,
-  "fire-immunity": -42177,
-  "teleblock-timer": -42177,
-  "prayerblock-timer": -42177,
-  "skull-timer": -48821,
->>>>>>> 76cab8347887a357f8e4f54d9705199fa65221b6
+  "poison-immunity": -43293,
+  "overload-timer": -43293,
+  "fire-immunity": -43293,
+  "teleblock-timer": -43293,
+  "prayerblock-timer": -43293,
+  "skull-timer": -72809,
   "target-kills": 0,
   "normal-kills": 0,
   "deaths": 0,
   "pkp": 0,
   "inventory": [
     {
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
       "id": -1,
       "amount": 0,
       "slot": 0
@@ -82,232 +40,132 @@
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 1
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 2
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 3
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 4
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 5
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 6
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 7
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 8
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 9
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 10
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 11
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 12
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 13
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 14
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 15
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 16
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 17
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 18
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 19
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 20
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 21
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 22
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 23
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 24
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     },
     {
       "id": -1,
       "amount": 0,
-<<<<<<< HEAD
       "slot": 0
-=======
-      "slot": 25
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 26
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
+      "slot": 0
     },
     {
       "id": -1,
@@ -317,13 +175,8 @@
   ],
   "equipment": [
     {
-<<<<<<< HEAD
       "id": -1,
       "amount": 0,
-=======
-      "id": 1042,
-      "amount": 1,
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
       "slot": 0
     },
     {
@@ -394,7 +247,6 @@
   ],
   "appearance": [
     0,
-<<<<<<< HEAD
     3,
     18,
     26,
@@ -406,19 +258,6 @@
     14,
     5,
     4,
-=======
-    0,
-    18,
-    26,
-    33,
-    36,
-    42,
-    10,
-    0,
-    0,
-    0,
-    0,
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
     0
   ],
   "skills": {
@@ -426,11 +265,7 @@
       1,
       1,
       1,
-<<<<<<< HEAD
-      2,
-=======
       10,
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
       1,
       1,
       1,
@@ -504,58 +339,9 @@
   },
   "friends": [],
   "ignores": [],
-<<<<<<< HEAD
   "bank-0": [],
   "bank-1": [],
   "bank-2": [],
-=======
-  "bank-0": [
-    {
-      "id": 12345,
-      "amount": 1,
-      "slot": 0
-    },
-    {
-      "id": 2343,
-      "amount": 1,
-      "slot": 1
-    },
-    {
-      "id": 23465,
-      "amount": 1,
-      "slot": 2
-    },
-    {
-      "id": 1233,
-      "amount": 1,
-      "slot": 3
-    },
-    {
-      "id": 4321,
-      "amount": 1,
-      "slot": 4
-    },
-    {
-      "id": 45634,
-      "amount": 1,
-      "slot": 5
-    }
-  ],
-  "bank-1": [
-    {
-      "id": 1042,
-      "amount": 19,
-      "slot": 0
-    }
-  ],
-  "bank-2": [
-    {
-      "id": 9998,
-      "amount": 1,
-      "slot": 0
-    }
-  ],
->>>>>>> 2f6ed6014430cc7a2d06ba9c9b9b1a6e1b5c7497
   "bank-3": [],
   "bank-4": [],
   "bank-5": [],

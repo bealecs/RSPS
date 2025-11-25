@@ -317,6 +317,8 @@ public class GameApplet extends Applet implements Runnable, MouseListener,
 						Client.cameraZoom = 1200;
 					}
 
+					// Camera zoom settings removed to prevent interference with volume controls
+					/*
 					int setting = 0;
 
 					if (Client.cameraZoom > 1000) {
@@ -330,6 +332,7 @@ public class GameApplet extends Applet implements Runnable, MouseListener,
 					}
 
 					Client.instance.settings[168] = setting;
+					*/
 				}
 
 				Client.updateChatbox = true;

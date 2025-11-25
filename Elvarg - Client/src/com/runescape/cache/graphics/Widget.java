@@ -305,6 +305,7 @@ public final class Widget {
 		}
 		interfaceLoader = interfaces;
 		clanChatTab(textDrawingAreas);
+		displayOptionsTab(textDrawingAreas);
 		configureLunar(textDrawingAreas);
 		quickPrayers(textDrawingAreas);
 		equipmentScreen(textDrawingAreas);
@@ -1411,6 +1412,30 @@ public final class Widget {
 		list.height = 158;
 		list.width = 174;
 		list.scrollMax = 1405;
+	}
+
+	public static void displayOptionsTab(GameFont[] tda) {
+		Widget tab = addTabInterface(15200);
+
+		addSpriteLoader(15201, 196);
+		
+		addText(15202, "Display Options", tda, 1, 0xff9b00, true, true);
+		
+		// Fixed mode option
+		addHoverText(15203, "Fixed Mode", "Switch to Fixed Mode", tda, 1, 0xff9b00, false, true, 150);
+		addText(15204, "Classic 765x503 resolution", tda, 0, 0xcccccc, false, true);
+		
+		// Resizable mode option
+		addHoverText(15205, "Resizable Mode", "Switch to Resizable Mode", tda, 1, 0xff9b00, false, true, 150);
+		addText(15206, "Adjusts to your window size", tda, 0, 0xcccccc, false, true);
+		
+		tab.totalChildren(6);
+		tab.child(0, 15201, 0, 62);   // Background sprite
+		tab.child(1, 15202, 95, 10);  // Title
+		tab.child(2, 15203, 20, 80);  // Fixed mode button
+		tab.child(3, 15204, 20, 95);  // Fixed mode description
+		tab.child(4, 15205, 20, 130); // Resizable mode button
+		tab.child(5, 15206, 20, 145); // Resizable mode description
 	}
 
 	public static void addHoverText2(int id, String text, String[] tooltips, GameFont tda[], int idx, int color,
