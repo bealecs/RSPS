@@ -51,11 +51,16 @@ public class CommandPacketListener implements PacketListener {
 						player.setExperienceLocked(!player.experienceLocked());
 						player.getPacketSender().sendMessage("Lock: " + player.experienceLocked());
 					}
-				  if (parts[0].equalsIgnoreCase("empty")) {
-						player.getInventory().resetItems().refreshItems();
-					}
-				  break;
-			  case VETERAN:
+				  if (parts[0].equalsIgnoreCase("empty")) { 0
+				  +
+						player.getInventory().resetItems().refreshItems(); 0
+						+
+					} 0
+					+
+				  break; 0
+				  +
+			  case VETERAN: 0
+			  +
 				  if (parts[0].equalsIgnoreCase("bank")) {
 						player.getBank(player.getCurrentBankTab()).open();
 					}

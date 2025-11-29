@@ -1,12 +1,13 @@
 {
   "username": "Paul",
-  "password": "tja",
-  "staff-rights": "PLAYER",
+  "password": "paul",
+  "staff-rights": "ADMINISTRATOR",
   "position": {
-    "x": 3094,
-    "y": 3493,
+    "x": 3092,
+    "y": 3491,
     "z": 0
   },
+  "unlimited-run-energy": true,
   "spell-book": "NORMAL",
   "auto-retaliate": false,
   "xp-locked": false,
@@ -15,18 +16,18 @@
   "rigour": false,
   "augury": false,
   "has-veng": false,
-  "last-veng": -43293,
+  "last-veng": -3668,
   "running": true,
   "run-energy": 100,
   "spec-percentage": 100,
   "recoil-damage": 0,
   "poison-damage": 0,
-  "poison-immunity": -43293,
-  "overload-timer": -43293,
-  "fire-immunity": -43293,
-  "teleblock-timer": -43293,
-  "prayerblock-timer": -43293,
-  "skull-timer": -72809,
+  "poison-immunity": -3668,
+  "overload-timer": -3668,
+  "fire-immunity": -3668,
+  "teleblock-timer": -3668,
+  "prayerblock-timer": -3668,
+  "skull-timer": -6212,
   "target-kills": 0,
   "normal-kills": 0,
   "deaths": 0,
@@ -40,132 +41,132 @@
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 1
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 2
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 3
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 4
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 5
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 6
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 7
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 8
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 9
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 10
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 11
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 12
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 13
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 14
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 15
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 16
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 17
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 18
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 19
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 20
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 21
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 22
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 23
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 24
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 25
     },
     {
       "id": -1,
       "amount": 0,
-      "slot": 0
+      "slot": 26
     },
     {
       "id": -1,
@@ -175,8 +176,8 @@
   ],
   "equipment": [
     {
-      "id": -1,
-      "amount": 0,
+      "id": 1042,
+      "amount": 1,
       "slot": 0
     },
     {
@@ -247,17 +248,17 @@
   ],
   "appearance": [
     0,
-    3,
+    0,
     18,
     26,
-    34,
-    38,
+    33,
+    36,
     42,
-    14,
-    2,
-    14,
-    5,
-    4,
+    10,
+    0,
+    0,
+    0,
+    0,
     0
   ],
   "skills": {
@@ -339,9 +340,52 @@
   },
   "friends": [],
   "ignores": [],
-  "bank-0": [],
-  "bank-1": [],
-  "bank-2": [],
+  "bank-0": [
+    {
+      "id": 12345,
+      "amount": 1,
+      "slot": 0
+    },
+    {
+      "id": 2343,
+      "amount": 1,
+      "slot": 1
+    },
+    {
+      "id": 23465,
+      "amount": 1,
+      "slot": 2
+    },
+    {
+      "id": 1233,
+      "amount": 1,
+      "slot": 3
+    },
+    {
+      "id": 4321,
+      "amount": 1,
+      "slot": 4
+    },
+    {
+      "id": 45634,
+      "amount": 1,
+      "slot": 5
+    }
+  ],
+  "bank-1": [
+    {
+      "id": 1042,
+      "amount": 19,
+      "slot": 0
+    }
+  ],
+  "bank-2": [
+    {
+      "id": 9998,
+      "amount": 1,
+      "slot": 0
+    }
+  ],
   "bank-3": [],
   "bank-4": [],
   "bank-5": [],
