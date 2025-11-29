@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(dir /s /b \"C:\\Users\\clift\\RSPS\\Elvarg - Client\\src\")",
+      "Bash(findstr:*)",
+      "Bash(java -version:*)",
+      "Bash(dir:*)",
+      "Bash(build-verbose.bat)",
+      "Bash(cmd /c build-verbose.bat)",
+      "Bash(if [ -f \"Elvarg-Client.jar\" ])",
+      "Bash(then unzip -q -c Elvarg-Client.jar META-INF/MANIFEST.MF)",
+      "Bash(else echo \"JAR not found\")",
+      "Bash(fi)",
+      "Bash(copy \"Elvarg - Server\\data\\cache\\definitions\\items.txt\" \"Elvarg - Server\\data\\cache\\definitions\\items.txt.backup\")",
+      "Bash(python test_wiki_fetch.py:*)",
+      "Bash(echo:*)",
+      "Bash(python update_item_stats.py:*)",
+      "Bash(tee:*)",
+      "Bash(python update_all_items.py:*)",
+      "Bash(rm:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

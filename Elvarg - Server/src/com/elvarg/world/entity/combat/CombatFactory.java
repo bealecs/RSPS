@@ -73,13 +73,18 @@ public class CombatFactory {
 
 		int damage = 0;
 
+		// Max hit dummy - always hit max damage
+		boolean isMaxHitDummy = victim.isNpc() && victim.getAsNpc().getId() == MAX_HIT_DUMMY_ID;
+
 		if (type == CombatType.MELEE) {
-			damage = Misc.inclusive(1, DamageFormulas.calculateMaxMeleeHit(entity));
+			int maxHit = DamageFormulas.calculateMaxMeleeHit(entity);
+			damage = isMaxHitDummy ? maxHit : Misc.inclusive(1, maxHit);
 
 			// Do melee effects with the calculated damage..
 
 		} else if (type == CombatType.RANGED) {
-			damage = Misc.inclusive(1, DamageFormulas.calculateMaxRangedHit(entity));
+			int maxHit = DamageFormulas.calculateMaxRangedHit(entity);
+			damage = isMaxHitDummy ? maxHit : Misc.inclusive(1, maxHit);
 
 			// Do ranged effects with the calculated damage..
 			if (entity.isPlayer()) {
@@ -105,7 +110,8 @@ public class CombatFactory {
 			}
 
 		} else if (type == CombatType.MAGIC) {
-			damage = Misc.inclusive(1, DamageFormulas.getMagicMaxhit(entity));
+			int maxHit = DamageFormulas.getMagicMaxhit(entity);
+			damage = isMaxHitDummy ? maxHit : Misc.inclusive(1, maxHit);
 
 			// Do magic effects with the calculated damage..
 		}
@@ -363,6 +369,14 @@ public class CombatFactory {
 		boolean magic_splash = method.getCombatType() == CombatType.MAGIC && !qHit.isAccurate();
 		if (!magic_splash) {
 			qHit.dealDamage();
+		}
+
+		// Display max hit for training dummy
+		if (attacker.isPlayer() && target.isNpc() && target.getAsNpc().getId() == MAX_HIT_DUMMY_ID) {
+			String combatStyle = method.getCombatType().toString();
+			attacker.getAsPlayer().getPacketSender().sendMessage(
+				"Your max hit with " + combatStyle + " is: " + qHit.getTotalDamage()
+			);
 		}
 
 		// Make sure to let the combat method know we finished the attack
@@ -627,6 +641,11 @@ public class CombatFactory {
 	}
 
 	public static void checkAutoretaliate(Character attacker, Character target) {
+		// Max hit dummy never retaliates
+		if (target.isNpc() && target.getAsNpc().getId() == MAX_HIT_DUMMY_ID) {
+			return;
+		}
+
 		if (!CombatFactory.isAttacking(target)) {
 
 			boolean auto_ret;
@@ -798,7 +817,7 @@ public class CombatFactory {
 	/**
 	 * Calculates the combat level difference for wilderness player vs. player
 	 * combat.
-	 * 
+	 *
 	 * @param combatLevel
 	 *            the combat level of the first person.
 	 * @param otherCombatLevel
@@ -814,4 +833,7 @@ public class CombatFactory {
 			return 0;
 		}
 	}
+
+	/** Max hit dummy NPC ID **/
+	public static final int MAX_HIT_DUMMY_ID = 823;
 }

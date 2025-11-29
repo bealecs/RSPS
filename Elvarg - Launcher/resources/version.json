@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "url": "http://yourserver.com/downloads/Elvarg-Client.jar",
+  "changelog": [
+    "Added WASD camera mode persistence",
+    "Fixed login issues",
+    "Performance improvements"
+  ],
+  "required": true
+}

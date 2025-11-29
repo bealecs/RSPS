@@ -314,7 +314,7 @@ public abstract class Character extends Entity {
 
 	/**
 	 * Deals one damage to this entity.
-	 * 
+	 *
 	 * @param hit
 	 *            the damage to be dealt.
 	 */

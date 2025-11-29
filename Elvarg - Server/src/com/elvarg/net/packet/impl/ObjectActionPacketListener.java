@@ -49,6 +49,12 @@ public class ObjectActionPacketListener implements PacketListener {
 				: ObjectDefinition.forId(id).getSizeY();
 		if (size <= 0)
 			size = 1;
+
+		// Force tunnel entrances to require being right next to them
+		if (id == 16529 || id == 16530) {
+			size = 1;
+		}
+
 		gameObject.setSize(size);
 		if (player.getRights() == PlayerRights.DEVELOPER)
 			player.getPacketSender()
@@ -99,6 +105,60 @@ public class ObjectActionPacketListener implements PacketListener {
 						player.getPacketSender()
 								.sendMessage("You don't need to recharge your Prayer points right now.");
 					}
+					break;
+
+				case GE_TUNNEL_ENTRANCE:
+					// Grand Exchange to Edgeville agility shortcut
+					int agilityLevel = player.getSkillManager().getCurrentLevel(Skill.AGILITY);
+					int requiredLevel = 21;
+
+					if (agilityLevel < requiredLevel) {
+						player.getPacketSender().sendMessage("You need an Agility level of " + requiredLevel + " to use this shortcut.");
+						return;
+					}
+
+					// Lock the player during the action
+					player.getMovementQueue().setMovementStatus(com.elvarg.world.model.movement.MovementStatus.DISABLED);
+					player.getPacketSender().sendMessage("You squeeze through the tunnel...");
+					player.performAnimation(new Animation(749)); // Crawling animation
+
+					// Delay before teleport (3 game ticks = 1.8 seconds)
+					TaskManager.submit(new com.elvarg.engine.task.Task(3, player, false) {
+						@Override
+						protected void execute() {
+							player.moveTo(new Position(3141, 3513, 0));
+							player.getMovementQueue().setMovementStatus(com.elvarg.world.model.movement.MovementStatus.NONE);
+							player.getSkillManager().addExperience(Skill.AGILITY, 5);
+							stop();
+						}
+					});
+					break;
+
+				case GE_TUNNEL_EXIT:
+					// Edgeville to Grand Exchange (return path)
+					int agilityLevelReturn = player.getSkillManager().getCurrentLevel(Skill.AGILITY);
+					int requiredLevelReturn = 21;
+
+					if (agilityLevelReturn < requiredLevelReturn) {
+						player.getPacketSender().sendMessage("You need an Agility level of " + requiredLevelReturn + " to use this shortcut.");
+						return;
+					}
+
+					// Lock the player during the action
+					player.getMovementQueue().setMovementStatus(com.elvarg.world.model.movement.MovementStatus.DISABLED);
+					player.getPacketSender().sendMessage("You squeeze through the tunnel...");
+					player.performAnimation(new Animation(749)); // Crawling animation
+
+					// Delay before teleport (3 game ticks = 1.8 seconds)
+					TaskManager.submit(new com.elvarg.engine.task.Task(3, player, false) {
+						@Override
+						protected void execute() {
+							player.moveTo(new Position(3139, 3516, 0));
+							player.getMovementQueue().setMovementStatus(com.elvarg.world.model.movement.MovementStatus.NONE);
+							player.getSkillManager().addExperience(Skill.AGILITY, 5);
+							stop();
+						}
+					});
 					break;
 
 				}
@@ -183,4 +243,6 @@ public class ObjectActionPacketListener implements PacketListener {
 	private static final int PRAYER_ALTAR = 409;
 	private static final int EDGEVILLE_BANK = 6943;
 	private static final int WILDERNESS_DITCH = 23271;
+	private static final int GE_TUNNEL_ENTRANCE = 16529;
+	private static final int GE_TUNNEL_EXIT = 16530;
 }

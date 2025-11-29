@@ -31,6 +31,8 @@ import com.elvarg.net.packet.impl.RegionChangePacketListener;
 import com.elvarg.net.packet.impl.SilencedPacketListener;
 import com.elvarg.net.packet.impl.SwitchItemSlotPacketListener;
 import com.elvarg.net.packet.impl.TradeRequestPacketListener;
+import com.elvarg.net.packet.impl.WasdModePacketListener;
+import com.elvarg.net.packet.impl.HotkeyMappingPacketListener;
 
 /**
  * Defining all packets and other packet-related-constants that are in the 317
@@ -80,6 +82,10 @@ public class PacketConstants {
 	public static final int MAGIC_ON_PLAYER_OPCODE = 249;
 	public static final int BANK_TAB_CREATION_OPCODE = 216;
 	public static final int TRADE_REQUEST_OPCODE = 139;
+	public static final int WASD_MODE_OPCODE = 241;
+	public static final int HOTKEY_MAPPING_OPCODE = 242;
+
+	public static final int SEND_DUO_INTERFACE = 248;
 
 	public static final int OBJECT_FIRST_CLICK_OPCODE = 132, OBJECT_SECOND_CLICK_OPCODE = 252,
 			OBJECT_THIRD_CLICK_OPCODE = 70, OBJECT_FOURTH_CLICK_OPCODE = 234, OBJECT_FIFTH_CLICK_OPCODE = 228;
@@ -158,5 +164,8 @@ public class PacketConstants {
 		PACKETS[ENTER_SYNTAX_OPCODE] = new EnterInputPacketListener();
 
 		PACKETS[TRADE_REQUEST_OPCODE] = new TradeRequestPacketListener();
+
+		PACKETS[WASD_MODE_OPCODE] = new WasdModePacketListener();
+		PACKETS[HOTKEY_MAPPING_OPCODE] = new HotkeyMappingPacketListener();
 	}
 }

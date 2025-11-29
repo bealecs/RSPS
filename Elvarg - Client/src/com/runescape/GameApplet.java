@@ -410,6 +410,7 @@ public class GameApplet extends Applet implements Runnable, MouseListener,
 	public int releasedX;
 	public int releasedY;
 	public boolean mouseWheelDown;
+	public boolean rightMouseButtonDown;
 
 	public final void mousePressed(MouseEvent e) {
 		int x = e.getX();
@@ -434,6 +435,9 @@ public class GameApplet extends Applet implements Runnable, MouseListener,
 			clickType = RIGHT;
 			clickMode1 = 2;
 			clickMode2 = 2;
+			rightMouseButtonDown = true;
+			mouseWheelX = x;
+			mouseWheelY = y;
 		} else {
 			clickType = LEFT;
 			clickMode1 = 1;
@@ -455,6 +459,7 @@ public class GameApplet extends Applet implements Runnable, MouseListener,
 		clickMode2 = 0;
 		clickType = RELEASED;
 		mouseWheelDown = false;
+		rightMouseButtonDown = false;
 	}
 
 	public final void mouseClicked(MouseEvent mouseevent) {
@@ -488,6 +493,14 @@ public class GameApplet extends Applet implements Runnable, MouseListener,
 			mouseWheelY = e.getY();
 			return;
 		}
+		if (rightMouseButtonDown && (Client.instance == null || !Client.instance.isMenuOpen())) {
+			y = mouseWheelX - e.getX();
+			int k = mouseWheelY - e.getY();
+			mouseWheelDragged(y, -k);
+			mouseWheelX = e.getX();
+			mouseWheelY = e.getY();
+			return;
+		}
 		idleTime = 0;
 		mouseX = x;
 		mouseY = y;
@@ -513,89 +526,161 @@ public class GameApplet extends Applet implements Runnable, MouseListener,
 	}
 
 	public final void keyPressed(KeyEvent keyevent) {
-		idleTime = 0;
-		int i = keyevent.getKeyCode();
-		int j = keyevent.getKeyChar();
-		if (i == KeyEvent.VK_F1) {
-			Client.setTab(3);
-		} else if (i == KeyEvent.VK_ESCAPE) {
-			Client.escapePressed();
-		} else if (i == KeyEvent.VK_F2) {
-			Client.setTab(4);
-		} else if (i == KeyEvent.VK_F3) {
-			Client.setTab(5);
-		} else if (i == KeyEvent.VK_F4) {
-			Client.setTab(6);
-		} else if (i == KeyEvent.VK_F5) {
-			Client.setTab(0);
-		} else if (i == 192) {
-			Client.consoleOpen = !Client.consoleOpen;
-		}
-		if (j < 30)
-			j = 0;
-		if (i == 37)
-			j = 1;
-		if (i == 39)
-			j = 2;
-		if (i == 38)
-			j = 3;
-		if (i == 40)
-			j = 4;
-		if (i == 17)
-			j = 5;
-		if (i == 8)
-			j = 8;
-		if (i == 127)
-			j = 8;
-		if (i == 9)
-			j = 9;
-		if (i == 10)
-			j = 10;
-		if (i >= 112 && i <= 123)
-			j = (1008 + i) - 112;
-		if (i == 36)
-			j = 1000;
-		if (i == 35)
-			j = 1001;
-		if (i == 33)
-			j = 1002;
-		if (i == 34)
-			j = 1003;
-		if (j > 0 && j < 128)
-			keyArray[j] = 1;
-		if (j > 4) {
-			charQueue[writeIndex] = j;
-			writeIndex = writeIndex + 1 & 0x7f;
-		}
-	}
+    idleTime = 0;
+    int i = keyevent.getKeyCode();
+    int j = keyevent.getKeyChar();
+
+    // Hotkey mapping system - Check if hotkey is pressed
+    if (Client.instance != null && !Client.instance.isChatInputActive()) {
+        int hotkeyIndex = -1;
+        if (i == KeyEvent.VK_1) hotkeyIndex = 0;
+        else if (i == KeyEvent.VK_2) hotkeyIndex = 1;
+        else if (i == KeyEvent.VK_3) hotkeyIndex = 2;
+        else if (i == KeyEvent.VK_4) hotkeyIndex = 3;
+        else if (i == KeyEvent.VK_5) hotkeyIndex = 4;
+        else if (i == KeyEvent.VK_Q) hotkeyIndex = 5;
+        else if (i == KeyEvent.VK_E) hotkeyIndex = 6;
+        else if (i == KeyEvent.VK_R) hotkeyIndex = 7;
+        else if (i == KeyEvent.VK_TAB) hotkeyIndex = 8;
+
+        if (hotkeyIndex >= 0 && hotkeyIndex < Client.hotkeyMappings.length) {
+            int actionId = Client.hotkeyMappings[hotkeyIndex];
+            if (Client.executeHotkeyAction(actionId)) {
+                return; // Action executed, don't process default behavior
+            }
+        }
+    }
+    if (i == KeyEvent.VK_F1) {
+        Client.setTab(3);
+    } else if (i == KeyEvent.VK_ESCAPE) {
+        Client.escapePressed();
+    } else if (i == KeyEvent.VK_F2) {
+        Client.setTab(4);
+    } else if (i == KeyEvent.VK_F3) {
+        Client.setTab(5);
+    } else if (i == KeyEvent.VK_F4) {
+        Client.setTab(6);
+    } else if (i == KeyEvent.VK_F5) {
+        Client.setTab(0);
+    } else if (i == 192) {
+        Client.consoleOpen = !Client.consoleOpen;
+    }
+    
+    // Reset 'j' for non-printable keys below ASCII 30
+    if (j < 30)
+        j = 0;
+        
+    // Standard Arrow Key Mapping (Maps arrows to command codes 1-4)
+    if (i == 37) // Left Arrow
+        j = 1;
+    if (i == 39) // Right Arrow
+        j = 2;
+    if (i == 38) // Up Arrow
+        j = 3;
+    if (i == 40) // Down Arrow
+        j = 4;
+    
+    //  WASD Camera Mapping Logic (The Fix for text input conflict) 
+    // Check if we are NOT in an active text input/dialogue state
+    if (Client.instance != null && !Client.instance.isChatInputActive() && Client.openInterfaceId == -1) {
+        
+        // Map W, A, S, D to the Arrow Key command codes (1-4)
+        if (i == KeyEvent.VK_W) 
+            j = 3; // W = Up/Pitch Down (Key Array Index 3)
+        if (i == KeyEvent.VK_A) 
+            j = 1; // A = Left/Yaw Left (Key Array Index 1)
+        if (i == KeyEvent.VK_S) 
+            j = 4; // S = Down/Pitch Up (Key Array Index 4)
+        if (i == KeyEvent.VK_D) 
+            j = 2; // D = Right/Yaw Right (Key Array Index 2)
+            
+    }
+    //  End WASD Camera Mapping Logic 
+
+    // Other Command Key Mapping
+    if (i == 17) // Control Key
+        j = 5;
+    if (i == 8) // Backspace
+        j = 8;
+    if (i == 127) // Delete (Also Backspace in some clients)
+        j = 8;
+    if (i == 9) // Tab
+        j = 9;
+    if (i == 10) // Enter
+        j = 10;
+        
+    // F-key mapping to high command codes (1008+)
+    if (i >= 112 && i <= 123)
+        j = (1008 + i) - 112;
+    
+    // Home, End, Page Up, Page Down
+    if (i == 36)
+        j = 1000;
+    if (i == 35)
+        j = 1001;
+    if (i == 33)
+        j = 1002;
+    if (i == 34)
+        j = 1003;
+        
+    // If a low command code (1-127) was set, mark the key as held down
+    if (j > 0 && j < 128)
+        keyArray[j] = 1;
+        
+    // If a character code (j > 4, typically letters/numbers) was set, queue it for chat/input
+    if (j > 4) {
+        charQueue[writeIndex] = j;
+        writeIndex = writeIndex + 1 & 0x7f;
+    }
+}
 
 	public final void keyReleased(KeyEvent keyevent) {
-		idleTime = 0;
-		int i = keyevent.getKeyCode();
-		char c = keyevent.getKeyChar();
-		if (c < '\036')
-			c = '\0';
-		if (i == 37)
-			c = '\001';
-		if (i == 39)
-			c = '\002';
-		if (i == 38)
-			c = '\003';
-		if (i == 40)
-			c = '\004';
-		if (i == 17)
-			c = '\005';
-		if (i == 8)
-			c = '\b';
-		if (i == 127)
-			c = '\b';
-		if (i == 9)
-			c = '\t';
-		if (i == 10)
-			c = '\n';
-		if (c > 0 && c < '\200')
-			keyArray[c] = 0;
-	}
+    idleTime = 0;
+    int i = keyevent.getKeyCode();
+    char c = keyevent.getKeyChar(); // 'c' is reused as the command code index here
+    
+    // Reset 'c' for non-printable keys below ASCII 30
+    if (c < '\036') 
+        c = '\0';
+    
+    //  WASD Key Release Mapping (The Fix for stuck movement) 
+    // If the released key is WASD, map it to command codes 1-4
+    if (i == KeyEvent.VK_W) 
+        c = 3; 
+    if (i == KeyEvent.VK_A) 
+        c = 1;
+    if (i == KeyEvent.VK_S) 
+        c = 4;
+    if (i == KeyEvent.VK_D) 
+        c = 2;
+    //  End WASD Key Release Mapping ⬆
+
+    // Standard Arrow Key Release Mapping
+    if (i == 37) // Left Arrow
+        c = '\001';
+    if (i == 39) // Right Arrow
+        c = '\002';
+    if (i == 38) // Up Arrow
+        c = '\003';
+    if (i == 40) // Down Arrow
+        c = '\004';
+
+    // Other Command Key Release Mapping
+    if (i == 17) // Control Key
+        c = '\005';
+    if (i == 8) // Backspace
+        c = '\b';
+    if (i == 127) // Delete
+        c = '\b';
+    if (i == 9) // Tab
+        c = '\t';
+    if (i == 10) // Enter
+        c = '\n';
+        
+    // If a command code (1-127) was identified, set keyArray[c] to 0
+    if (c > 0 && c < '\200')
+        keyArray[c] = 0;
+}
 
 	public final void keyTyped(KeyEvent keyevent) {
 	}

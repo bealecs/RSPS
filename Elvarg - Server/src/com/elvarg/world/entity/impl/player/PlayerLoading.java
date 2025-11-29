@@ -86,6 +86,36 @@ public class PlayerLoading {
 				player.setAuguryUnlocked(reader.get("augury").getAsBoolean());
 			}
 
+			if (reader.has("wasd-mode")) {
+				player.setWasdMode(reader.get("wasd-mode").getAsBoolean());
+			}
+
+			if (reader.has("unlimited-run-energy")) {
+				player.setUnlimitedRunEnergy(reader.get("unlimited-run-energy").getAsBoolean());
+			}
+
+			if (reader.has("hotkey-mappings")) {
+				int[] loadedMappings = builder.fromJson(reader.get("hotkey-mappings").getAsJsonArray(), int[].class);
+				if (loadedMappings == null || loadedMappings.length != 9) {
+					loadedMappings = new int[9]; // Default to no mappings (all zeros)
+				}
+				player.setHotkeyMappings(loadedMappings);
+			}
+
+			if (reader.has("quick-prayers-active")) {
+				player.setQuickPrayersActive(reader.get("quick-prayers-active").getAsBoolean());
+			}
+
+			if (reader.has("quick-prayers-selection")) {
+				boolean[] loadedSelection = builder.fromJson(reader.get("quick-prayers-selection").getAsJsonArray(), boolean[].class);
+				// If array is empty or wrong size, reinitialize it
+				if (loadedSelection == null || loadedSelection.length != com.elvarg.world.content.PrayerHandler.PrayerData.values().length) {
+					loadedSelection = new boolean[com.elvarg.world.content.PrayerHandler.PrayerData.values().length];
+					// Defaults to all false = unselected (no fill needed)
+				}
+				player.setQuickPrayersSelection(loadedSelection);
+			}
+
 			if (reader.has("has-veng")) {
 				player.setHasVengeance(reader.get("has-veng").getAsBoolean());
 			}

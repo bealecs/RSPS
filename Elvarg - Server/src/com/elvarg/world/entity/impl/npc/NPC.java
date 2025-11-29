@@ -82,6 +82,11 @@ public class NPC extends Character {
 
 	@Override
 	public NPC setHitpoints(int hitpoints) {
+		// Max hit dummy never dies - always restore HP
+		if (this.id == 823) {
+			this.hitpoints = getDefinition() != null ? getDefinition().getHitpoints() : 100;
+			return this;
+		}
 		this.hitpoints = hitpoints;
 		if (this.hitpoints <= 0)
 			appendDeath();

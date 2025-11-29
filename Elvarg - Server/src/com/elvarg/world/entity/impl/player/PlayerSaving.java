@@ -45,6 +45,11 @@ public class PlayerSaving {
 			object.addProperty("preserve", new Boolean(player.isPreserveUnlocked()));
 			object.addProperty("rigour", new Boolean(player.isRigourUnlocked()));
 			object.addProperty("augury", new Boolean(player.isAuguryUnlocked()));
+			object.addProperty("wasd-mode", new Boolean(player.isWasdMode()));
+			object.addProperty("unlimited-run-energy", new Boolean(player.hasUnlimitedRunEnergy()));
+			object.add("hotkey-mappings", builder.toJsonTree(player.getHotkeyMappings()));
+			object.addProperty("quick-prayers-active", new Boolean(player.isQuickPrayersActive()));
+			object.add("quick-prayers-selection", builder.toJsonTree(player.getQuickPrayersSelection()));
 			object.addProperty("has-veng", new Boolean(player.hasVengeance()));
 			object.addProperty("last-veng", new Long(player.getVengeanceTimer().secondsRemaining()));
 			object.addProperty("running", new Boolean(player.isRunning()));

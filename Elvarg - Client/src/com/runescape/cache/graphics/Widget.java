@@ -306,6 +306,7 @@ public final class Widget {
 		interfaceLoader = interfaces;
 		clanChatTab(textDrawingAreas);
 		displayOptionsTab(textDrawingAreas);
+		hotkeyMappingInterface(textDrawingAreas);
 		configureLunar(textDrawingAreas);
 		quickPrayers(textDrawingAreas);
 		equipmentScreen(textDrawingAreas);
@@ -334,7 +335,7 @@ public final class Widget {
 	}
 
 	public static void settingsTab(GameFont[] gameFont) {
-		
+
 	}
 
 	public static void mainTeleports() {
@@ -569,7 +570,7 @@ public final class Widget {
 		scroll.width = 300;
 		scroll.height = 270; 
 		scroll.scrollPosition = 0;
-		scroll.scrollMax = 400;
+		scroll.scrollMax = 400; 
 
 		//Add all monsters into the scroll..
 		String[] tooltips = {"Teleport: Rock Crabs", "Teleport: Pack Yaks", "Teleport: Experiments", "Teleport: Zombies", "Teleport: Bandits", "Teleport: Rock Crab", "Teleport: Rock Crab", "Teleport: Rock Crab", "Teleport: Rock Crab"};
@@ -1414,28 +1415,122 @@ public final class Widget {
 		list.scrollMax = 1405;
 	}
 
+	public static void hotkeyMappingInterface(GameFont[] tda) {
+		int frame = 0;
+		Widget tab = addTabInterface(15300);
+
+		// Background
+		addSpriteLoader(15301, 132);
+
+		// Title
+		addText(15302, "Hotkey Mapping", tda, 2, 0xFF981F, true, true);
+
+		// Instructions
+		addText(15303, "Click a hotkey to change its action", tda, 0, 0x9F9F9F, true, true);
+
+		// Hotkey labels and action texts
+		// Keys: 1, 2, 3, 4, 5, Q, E, R, Tab (indices 0-8)
+		String[] keyLabels = {"Key 1:", "Key 2:", "Key 3:", "Key 4:", "Key 5:",
+		                       "Key Q:", "Key E:", "Key R:", "Key Tab:"};
+
+		int startId = 15310;
+		for (int i = 0; i < 9; i++) {
+			// Key label (e.g., "Key 1:")
+			addText(startId + (i * 2), keyLabels[i], tda, 1, 0xFF9040, false, true);
+			// Action text (clickable - will show current action)
+			addHoverText(startId + (i * 2) + 1, "None", "Click to configure", tda, 0, 0xFFFFFF, false, true, 100, 0xFF9040);
+		}
+
+		// Close button
+		addHoverText(15330, "Close", "Close this interface", tda, 1, 0xFF9040, true, true, 100, 0xFFFFFF);
+
+		// Add all children
+		tab.totalChildren(22);
+		tab.child(frame++, 15301, 0, 22);      // Background sprite
+		tab.child(frame++, 15302, 95, 30);     // Title
+		tab.child(frame++, 15303, 95, 50);     // Instructions
+
+		// Add hotkey rows (9 keys * 2 elements each)
+		int yPos = 75;
+		for (int i = 0; i < 9; i++) {
+			tab.child(frame++, 15310 + (i * 2), 20, yPos);         // Key label
+			tab.child(frame++, 15310 + (i * 2) + 1, 80, yPos);     // Action text
+			yPos += 20;
+		}
+
+		tab.child(frame++, 15330, 95, 270);    // Close button
+	}
+
 	public static void displayOptionsTab(GameFont[] tda) {
+		int frame = 0;
 		Widget tab = addTabInterface(15200);
 
-		addSpriteLoader(15201, 196);
-		
-		addText(15202, "Display Options", tda, 1, 0xff9b00, true, true);
-		
-		// Fixed mode option
+		// Background
+		addSpriteLoader(15201, 132); // Same background as quick prayers
+
+		// Title
+		addText(15202, "More Options", tda, 2, 0xFF981F, true, true);
+
+		// Divider line after title
+		Widget divider = addInterface(15207);
+		divider.type = 3;
+		divider.allowSwapItems = false;
+		divider.width = 170;
+		divider.height = 1;
+		divider.textColor = 0x524a3d;
+
+		// Screen Mode Section
+		addText(15208, "Screen Mode", tda, 1, 0xFF981F, true, true);
+
+		// Fixed mode button
 		addHoverText(15203, "Fixed Mode", "Switch to Fixed Mode", tda, 1, 0xff9b00, false, true, 150);
 		addText(15204, "Classic 765x503 resolution", tda, 0, 0xcccccc, false, true);
-		
-		// Resizable mode option
+
+		// Divider line between options
+		Widget divider2 = addInterface(15215);
+		divider2.type = 3;
+		divider2.allowSwapItems = false;
+		divider2.width = 170;
+		divider2.height = 1;
+		divider2.textColor = 0x524a3d;
+
+		// Resizable mode button
 		addHoverText(15205, "Resizable Mode", "Switch to Resizable Mode", tda, 1, 0xff9b00, false, true, 150);
 		addText(15206, "Adjusts to your window size", tda, 0, 0xcccccc, false, true);
-		
-		tab.totalChildren(6);
-		tab.child(0, 15201, 0, 62);   // Background sprite
-		tab.child(1, 15202, 95, 10);  // Title
-		tab.child(2, 15203, 20, 80);  // Fixed mode button
-		tab.child(3, 15204, 20, 95);  // Fixed mode description
-		tab.child(4, 15205, 20, 130); // Resizable mode button
-		tab.child(5, 15206, 20, 145); // Resizable mode description
+
+		// Additional divider
+		Widget divider3 = addInterface(15217);
+		divider3.type = 3;
+		divider3.allowSwapItems = false;
+		divider3.width = 170;
+		divider3.height = 1;
+		divider3.textColor = 0x524a3d;
+
+		// Hotkey Mapping button
+		addHoverText(15220, "Hotkey Mapping", "Configure hotkeys for actions", tda, 1, 0xff9b00, false, true, 150);
+		addText(15221, "Map keys to actions", tda, 0, 0xcccccc, false, true);
+
+		tab.totalChildren(10);
+		tab.child(frame++, 15201, 0, 22);      // Background sprite
+		tab.child(frame++, 15202, 95, 30);     // Title
+
+		// Fixed mode section
+		tab.child(frame++, 15203, 15, 50);     // Fixed mode button text
+		tab.child(frame++, 15204, 15, 67);    // Fixed mode description
+
+		// Divider between options
+		tab.child(frame++, 15215, 15, 90);    // Divider
+
+		// Resizable mode section
+		tab.child(frame++, 15205, 15, 110);    // Resizable mode button text
+		tab.child(frame++, 15206, 15, 127);    // Resizable mode description
+
+		// Divider
+		tab.child(frame++, 15217, 5, 155);     // Divider
+
+		// Hotkey Mapping button
+		tab.child(frame++, 15220, 15, 170);    // Hotkey mapping button text
+		tab.child(frame++, 15221, 15, 187);    // Hotkey mapping description
 	}
 
 	public static void addHoverText2(int id, String text, String[] tooltips, GameFont tda[], int idx, int color,
@@ -1863,7 +1958,6 @@ public final class Widget {
 		int frame = 0;
 		Widget tab = addTabInterface(17200);
 
-		addTransparentSprite(17229, 131, 50);
 		addSpriteLoader(17201, 132);
 		addText(17230, "Select your quick prayers:", TDA, 0, 0xFF981F, false, true);
 
@@ -1873,7 +1967,12 @@ public final class Widget {
 		addHoverButton_sprite_loader(17231, 135, 190, 24, "Confirm Selection", -1, 17232, 1);
 		addHoveredButton_sprite_loader(17232, 136, 190, 24, 17233);
 
-		setChildren(58, tab);//
+		// Add sprites for bonus prayers (Preserve, Rigour, Augury) - using lit/enabled versions
+		addSpriteLoader(17250, 152); // Preserve sprite (enabled/lit)
+		addSpriteLoader(17251, 154); // Rigour sprite (enabled/lit)
+		addSpriteLoader(17252, 156); // Augury sprite (enabled/lit)
+
+		setChildren(62, tab);// 58 original + 3 bonus prayer sprites + 3 bonus prayer buttons - 1 bottom split - 1 gray overlay
 		setBounds(5632, 5, 8 + 20, frame++, tab);
 		setBounds(5633, 44, 8 + 20, frame++, tab);
 		setBounds(5634, 79, 11 + 20, frame++, tab);
@@ -1901,9 +2000,12 @@ public final class Widget {
 		setBounds(19826, 161, 160 + 20, frame++, tab);
 		setBounds(19828, 4, 207 + 12, frame++, tab);
 
-		setBounds(17229, 0, 25, frame++, tab);// Faded backing
-		setBounds(17201, 0, 22, frame++, tab);// Split
-		setBounds(17201, 0, 237, frame++, tab);// Split
+		// Add bounds for bonus prayer sprites
+		setBounds(17250, 44 - 3, 216, frame++, tab); // Preserve sprite
+		setBounds(17251, 79 - 3, 216, frame++, tab); // Rigour sprite
+		setBounds(17252, 116 - 3, 216, frame++, tab); // Augury sprite
+
+		setBounds(17201, 0, 22, frame++, tab);// Top split
 
 		setBounds(17202, 5 - 3, 8 + 17, frame++, tab);
 		setBounds(17203, 44 - 3, 8 + 17, frame++, tab);
@@ -1930,7 +2032,20 @@ public final class Widget {
 		setBounds(17224, 79 - 3, 160 + 17, frame++, tab);
 		setBounds(17225, 116 - 3, 160 + 17, frame++, tab);
 		setBounds(17226, 153 - 3, 160 + 17, frame++, tab);
-		setBounds(17227, 4 - 3, 207 + 4, frame++, tab);
+		// Original 17227, this is the 26th prayer button
+		setBounds(17227, 5 - 3, 216, frame++, tab); // (2, 216)
+
+		// Preserve (27th prayer) - Button with generic checkbox sprites
+		addConfigButton(17234, 17200, 134, 133, 14, 15, "Activate @or1@Preserve", 0, 1, 657);
+		setBounds(17234, 44 - 3, 216, frame++, tab); // (41, 216)
+
+		// Rigour (28th prayer) - Button with generic checkbox sprites
+		addConfigButton(17235, 17200, 134, 133, 14, 15, "Activate @or1@Rigour", 0, 1, 658);
+		setBounds(17235, 79 - 3, 216, frame++, tab); // (76, 216)
+
+		// Augury (29th prayer) - Button with generic checkbox sprites
+		addConfigButton(17236, 17200, 134, 133, 14, 15, "Activate @or1@Augury", 0, 1, 659);
+		setBounds(17236, 116 - 3, 216, frame++, tab); // (113, 216)
 
 		setBounds(17230, 5, 5, frame++, tab);// text
 		setBounds(17231, 0, 237, frame++, tab);// confirm

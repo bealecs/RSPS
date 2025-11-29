@@ -11,6 +11,7 @@ import com.elvarg.engine.task.TaskManager;
 import com.elvarg.engine.task.impl.CombatPoisonEffect;
 import com.elvarg.engine.task.impl.OverloadPotionTask;
 import com.elvarg.engine.task.impl.PlayerDeathTask;
+import com.elvarg.engine.task.impl.PlayerRunEnergyTask;
 import com.elvarg.engine.task.impl.PlayerSpecialAmountTask;
 import com.elvarg.engine.task.impl.WalkToTask;
 import com.elvarg.net.PlayerSession;
@@ -322,6 +323,12 @@ public class Player extends Character {
 		// Sending player's rights..
 		getPacketSender().sendRights();
 
+		// Send WASD mode setting
+		getPacketSender().sendWasdMode(isWasdMode());
+
+		// Send hotkey mappings
+		getPacketSender().sendHotkeyMappings(getHotkeyMappings());
+
 		// Close all interfaces, just in case...
 		getPacketSender().sendInterfaceRemoval();
 
@@ -354,6 +361,9 @@ public class Player extends Character {
 		if (getSpecialPercentage() < 100) {
 			TaskManager.submit(new PlayerSpecialAmountTask(this));
 		}
+
+		// Start run energy task
+		TaskManager.submit(new PlayerRunEnergyTask(this));
 
 		if (!getCombat().getFreezeTimer().finished()) {
 			getPacketSender().sendEffectTimer(getCombat().getFreezeTimer().secondsRemaining(), EffectTimer.FREEZE);
@@ -501,6 +511,14 @@ public class Player extends Character {
 	private boolean preserveUnlocked;
 	private boolean rigourUnlocked;
 	private boolean auguryUnlocked;
+	private boolean wasdMode;
+	private boolean unlimitedRunEnergy;
+
+	private int[] hotkeyMappings = new int[9]; // 0-8: Keys 1-5, Q, E, R, Tab
+
+	private boolean quickPrayersActive;
+	private boolean[] quickPrayersSelection = new boolean[com.elvarg.world.content.PrayerHandler.PrayerData.values().length];
+	// Defaults to all false = unselected
 
 	// Banking
 	private int currentBankTab;
@@ -1025,6 +1043,22 @@ public class Player extends Character {
 		this.auguryUnlocked = auguryUnlocked;
 	}
 
+	public boolean isQuickPrayersActive() {
+		return quickPrayersActive;
+	}
+
+	public void setQuickPrayersActive(boolean quickPrayersActive) {
+		this.quickPrayersActive = quickPrayersActive;
+	}
+
+	public boolean[] getQuickPrayersSelection() {
+		return quickPrayersSelection;
+	}
+
+	public void setQuickPrayersSelection(boolean[] quickPrayersSelection) {
+		this.quickPrayersSelection = quickPrayersSelection;
+	}
+
 	public PriceChecker getPriceChecker() {
 		return priceChecker;
 	}
@@ -1047,5 +1081,29 @@ public class Player extends Character {
 
 	public Trading getTrading() {
 		return trading;
+	}
+
+	public boolean isWasdMode() {
+		return wasdMode;
+	}
+
+	public void setWasdMode(boolean wasdMode) {
+		this.wasdMode = wasdMode;
+	}
+
+	public boolean hasUnlimitedRunEnergy() {
+		return unlimitedRunEnergy;
+	}
+
+	public void setUnlimitedRunEnergy(boolean unlimitedRunEnergy) {
+		this.unlimitedRunEnergy = unlimitedRunEnergy;
+	}
+
+	public int[] getHotkeyMappings() {
+		return hotkeyMappings;
+	}
+
+	public void setHotkeyMappings(int[] hotkeyMappings) {
+		this.hotkeyMappings = hotkeyMappings;
 	}
 }

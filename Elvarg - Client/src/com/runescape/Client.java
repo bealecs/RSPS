@@ -82,6 +82,7 @@ import com.runescape.io.packets.outgoing.impl.ClickButton;
 import com.runescape.io.packets.outgoing.impl.ClickButtonAction;
 import com.runescape.io.packets.outgoing.impl.CloseInterface;
 import com.runescape.io.packets.outgoing.impl.Command;
+import com.runescape.io.packets.outgoing.impl.WasdMode;
 import com.runescape.io.packets.outgoing.impl.DeleteFriend;
 import com.runescape.io.packets.outgoing.impl.DeleteIgnore;
 import com.runescape.io.packets.outgoing.impl.DropItem;
@@ -281,12 +282,20 @@ public class Client extends GameApplet {
 	public static int screenAreaWidth = 512;
 	public static int screenAreaHeight = 334;
 	public static int cameraZoom = 600;
+	public static int[] hotkeyMappings = new int[9]; // Hotkey mappings for keys 1-5, Q, E, R, Tab
 	public static boolean showChatComponents = true;
 	public static boolean showTabComponents = true;
 	public static boolean changeTabArea = frameMode == ScreenMode.FIXED ? false : true;
 	public static boolean changeChatArea = frameMode == ScreenMode.FIXED ? false : true;
 	public static boolean transparentTabArea = false;
 	private final int[] soundVolume;
+
+	public boolean wasdCameraEnabled = false;
+	private boolean chatInputActive = true;
+
+	public boolean isChatInputActive() {
+		return chatInputActive;
+	}
 
 	private final NumberFormat format = NumberFormat.getInstance(Locale.US);
 
@@ -910,9 +919,15 @@ public class Client extends GameApplet {
 			}
 			newRegularFont.drawBasicString(s + ":", xOffset + 11, 133 + yOffset,
 					changeChatArea ? 0xFFFFFF : 0, shadow);
-			newRegularFont.drawBasicString(inputString + "*",
-					xOffset + 12 + font.getTextWidth(s + ": "), 133 + yOffset,
-					changeChatArea ? 0x7FA9FF : 255, shadow);
+			if (promptInput.length() == 0 && !chatInputActive) {
+				newRegularFont.drawBasicString("Press enter to chat...",
+						xOffset + 12 + newRegularFont.getTextWidth(s + ": "), 133 + yOffset,
+						changeChatArea ? 0x7FA9FF : 255, shadow);
+			} else {
+				newRegularFont.drawBasicString(inputString + "*",
+						xOffset + 12 + newRegularFont.getTextWidth(s + ": "), 133 + yOffset,
+						changeChatArea ? 0x7FA9FF : 255, shadow);
+			}
 			Rasterizer2D.drawHorizontalLine(7, 121 + yOffset, 506, changeChatArea ? 0x575757 : 0x807660);
 			Rasterizer2D.defaultDrawingAreaSize();
 		}
@@ -2796,7 +2811,7 @@ public class Client extends GameApplet {
 		final int[] sideIconsX =
 			{17, 49, 83, 114, 146, 180, 214, 16, 49, 82, 116, 148, 184, 216},
 			sideIconsY = {9, 7, 7, 5, 2, 3, 7, 303, 306, 306, 302, 305, 303, 303, 303},
-			sideIconsId = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13},
+			sideIconsId = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 11},
 			sideIconsTab = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
 
 		int xOffset = frameMode == ScreenMode.FIXED ? 0 : frameWidth - 247;
@@ -3232,6 +3247,9 @@ public class Client extends GameApplet {
 		socketStream = null;
 		loggedIn = false;
 		loginScreenState = 0;
+		// Reset camera and chat input states for login screen
+		wasdCameraEnabled = false;
+		chatInputActive = true;
 		unlinkCaches();
 		scene.initToNull();
 		for (int i = 0; i < 4; i++)
@@ -4714,6 +4732,10 @@ public class Client extends GameApplet {
 			tabAreaAltered = true;
 		}
 
+		if (openWalkableInterface != -1) {
+			openWalkableInterface = -1;
+		}
+
 		if (backDialogueId != -1) {
 			backDialogueId = -1;
 			updateChatbox = true;
@@ -4779,18 +4801,17 @@ public class Client extends GameApplet {
 		}
 
 		// custom
-		if (action == 1506 && Configuration.enableOrbs) { // Select quick
-			// prayers
-			/*  outgoing.writeOpcode(185);
-                  outgoing.writeShort(5001);*/
+		if (action == 1506 && Configuration.enableOrbs) { // Select quick prayers
+			// Send packet to server to open quick prayers interface
+			// Server will handle tab switching and config initialization
+			sendPacket(new ClickButton(20001));
 		}
 
 		// custom
 		if (action == 1500 && Configuration.enableOrbs) { // Toggle quick
 			// prayers
 			prayClicked = !prayClicked;
-			/* outgoing.writeOpcode(185);
-                  outgoing.writeShort(5000);*/
+			sendPacket(new ClickButton(20000)); // Updated to new server-side button ID
 		}
 
 		// button clicks
@@ -5502,6 +5523,24 @@ public class Client extends GameApplet {
 			case 15205: // Resizable mode button
 				frameMode(ScreenMode.RESIZABLE);
 				break;
+			case 15220: // Hotkey Mapping button
+				openHotkeyMappingInterface();
+				break;
+
+			// Hotkey mapping interface
+			case 15330: // Close button
+				closeHotkeyMappingInterface();
+				break;
+			// Hotkey configuration buttons
+			case 15311: configureHotkey(0); break; // Key 1
+			case 15313: configureHotkey(1); break; // Key 2
+			case 15315: configureHotkey(2); break; // Key 3
+			case 15317: configureHotkey(3); break; // Key 4
+			case 15319: configureHotkey(4); break; // Key 5
+			case 15321: configureHotkey(5); break; // Key Q
+			case 15323: configureHotkey(6); break; // Key E
+			case 15325: configureHotkey(7); break; // Key R
+			case 15327: configureHotkey(8); break; // Key Tab
 			// Zoom controls removed from settings tab
 			case 32506:
 				bankTabShow = BankTabShow.FIRST_ITEM_IN_TAB;
@@ -6308,7 +6347,21 @@ public class Client extends GameApplet {
 	private void manageTextInputs() {
 		do {
 			int key = readChar(-796);
-			if (key == -1 || key == 96)
+			if (key == -1)
+				break;
+
+			if (wasdCameraEnabled && loggedIn && !chatInputActive) {
+				// Allow input for interface dialogs (bank X, friends chat, etc.)
+				// Only block keys when there's NO active input dialog
+				if (inputDialogState == 0 && !messagePromptRaised) {
+					if (key == 10 || key == 13) { // Enter pressed in camera mode
+						chatInputActive = true; // Enter chat mode
+					}
+					continue; // Ignore all other keys in camera mode ONLY if no dialog is open
+				}
+			}
+
+			if (key == 96)
 				break;
 			if(key == 167 || key == 96) {
 				if(myPrivilege >= 1 && myPrivilege <= 4) {
@@ -6330,6 +6383,9 @@ public class Client extends GameApplet {
 					sendCommandPacket(consoleInput);
 					consoleInput = "";
 					updateChatbox = true;
+					if (wasdCameraEnabled) {
+						chatInputActive = false;
+					}
 				}
 				return;
 			}
@@ -6418,6 +6474,9 @@ public class Client extends GameApplet {
 						long l3 = StringUtils.encodeBase37(promptInput);
 						//	chatJoin(l3);
 					}
+					if (wasdCameraEnabled) {
+						chatInputActive = false;
+					}
 				}
 			} else if (inputDialogState == 1) {
 				if (key >= 48 && key <= 57 && amountOrNameInput.length() < 10) {
@@ -6462,6 +6521,9 @@ public class Client extends GameApplet {
 					}
 					inputDialogState = 0;
 					updateChatbox = true;
+					if (wasdCameraEnabled) {
+						chatInputActive = false;
+					}
 				}
 			} else if (inputDialogState == 2) {
 				if (key >= 32 && key <= 122 && amountOrNameInput.length() < 12) {
@@ -6479,6 +6541,9 @@ public class Client extends GameApplet {
 					}
 					inputDialogState = 0;
 					updateChatbox = true;
+					if (wasdCameraEnabled) {
+						chatInputActive = false;
+					}
 				}
 			} else if (backDialogueId == -1) {
 				if (key >= 32 && key <= 122 && inputString.length() < 80) {
@@ -6496,8 +6561,14 @@ public class Client extends GameApplet {
 					}
 
 					if (inputString.startsWith("::")) {
-						// command
-						sendPacket(new Command(inputString.substring(2)));
+						String command = inputString.substring(2);
+						if (command.equalsIgnoreCase("wasd")) {
+							wasdCameraEnabled = !wasdCameraEnabled;
+							sendPacket(new WasdMode(wasdCameraEnabled));
+						} else {
+							// command
+							sendPacket(new Command(command));
+						}
 					} else {
 						String text = inputString.toLowerCase();
 						int colorCode = 0;                                    
@@ -6592,6 +6663,9 @@ public class Client extends GameApplet {
 					}
 					inputString = "";
 					updateChatbox = true;
+					if (wasdCameraEnabled) {
+						chatInputActive = false;
+					}
 				}
 			}
 		} while (true);
@@ -7240,6 +7314,83 @@ public class Client extends GameApplet {
 	public static void setTab(int id) {
 		tabId = id;
 		tabAreaAltered = true;
+	}
+
+	private static int configuringHotkeyIndex = -1; // -1 = not configuring, 0-8 = hotkey index being configured
+	private static final String[] HOTKEY_ACTION_NAMES = {
+		"None", "Inventory", "Prayer", "Spellbook", "Equipment", "Clan Chat",
+		"Friends", "Settings", "Emotes", "Special Attack", "Quick Prayers"
+	};
+
+	public static void openHotkeyMappingInterface() {
+		updateHotkeyInterfaceText();
+		instance.showInterface(15300);
+	}
+
+	public static void closeHotkeyMappingInterface() {
+		openInterfaceId = -1;
+		configuringHotkeyIndex = -1;
+	}
+
+	public static void updateHotkeyInterfaceText() {
+		// Update the action text for each hotkey based on current mappings
+		for (int i = 0; i < 9; i++) {
+			int actionId = hotkeyMappings[i];
+			String actionName = (actionId >= 0 && actionId < HOTKEY_ACTION_NAMES.length) ?
+				HOTKEY_ACTION_NAMES[actionId] : "None";
+			Widget.interfaceCache[15311 + (i * 2)].defaultText = actionName;
+		}
+	}
+
+	public static void configureHotkey(int hotkeyIndex) {
+		configuringHotkeyIndex = hotkeyIndex;
+		// Cycle through available actions
+		hotkeyMappings[hotkeyIndex] = (hotkeyMappings[hotkeyIndex] + 1) % HOTKEY_ACTION_NAMES.length;
+		updateHotkeyInterfaceText();
+		// Send packet to server to save mapping
+		instance.sendPacket(new com.runescape.io.packets.outgoing.impl.HotkeyMapping(hotkeyIndex, hotkeyMappings[hotkeyIndex]));
+	}
+
+	public static boolean executeHotkeyAction(int actionId) {
+		// 0: None, 1: Inventory, 2: Prayer, 3: Spellbook, 4: Equipment,
+		// 5: Clan Chat, 6: Friends, 7: Settings, 8: Emotes, 9: Special Attack, 10: Quick Prayers
+		switch (actionId) {
+			case 0: // None
+				return false;
+			case 1: // Inventory
+				setTab(3);
+				return true;
+			case 2: // Prayer
+				setTab(5);
+				return true;
+			case 3: // Spellbook
+				setTab(6);
+				return true;
+			case 4: // Equipment
+				setTab(1);
+				return true;
+			case 5: // Clan Chat
+				setTab(7);
+				return true;
+			case 6: // Friends
+				setTab(8);
+				return true;
+			case 7: // Settings
+				setTab(2);
+				return true;
+			case 8: // Emotes
+				setTab(9);
+				return true;
+			case 9: // Special Attack
+				setTab(0);
+				return true;
+			case 10: // Quick Prayers
+				// Toggle quick prayers
+				instance.sendPacket(new ClickButton(10000));
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	private final void minimapHovers() {
@@ -10699,15 +10850,44 @@ public class Client extends GameApplet {
 				anInt1014 += (j - anInt1014) / 16;
 			if (anInt1015 != k)
 				anInt1015 += (k - anInt1015) / 16;
-			if (super.keyArray[1] == 1)
+			boolean right = super.keyArray[1] == 1;
+			boolean left = super.keyArray[2] == 1;
+			boolean up = super.keyArray[3] == 1;
+			boolean down = super.keyArray[4] == 1;
+
+			if (keyArray[5] == 1 || wasdCameraEnabled) {
+// If Shift (keyArray[5]) is held OR the feature is toggled on
+
+    if (keyArray[1] == 1) { 
+        // Logic to rotate camera left (Yaw)
+    }
+    if (keyArray[2] == 1) {
+        // Logic to rotate camera right (Yaw)
+    }
+    if (keyArray[3] == 1) {
+        // Logic to adjust camera pitch up
+    }
+    if (keyArray[4] == 1) {
+        // Logic to adjust camera pitch down
+    }
+}
+			if (wasdCameraEnabled && !chatInputActive) {
+				left = left || super.keyArray[68] == 1; // A
+				right = right || super.keyArray[65] == 1; // D
+				up = up || super.keyArray[87] == 1; // W
+				down = down || super.keyArray[83] == 1; // S
+			}
+
+			if (right)
 				anInt1186 += (-40 - anInt1186) / 2;
-			else if (super.keyArray[2] == 1)
+			else if (left)
 				anInt1186 += (40 - anInt1186) / 2;
 			else
 				anInt1186 /= 2;
-			if (super.keyArray[3] == 1)
+
+			if (up)
 				anInt1187 += (17 - anInt1187) / 2;
-			else if (super.keyArray[4] == 1)
+			else if (down)
 				anInt1187 += (-17 - anInt1187) / 2;
 			else
 				anInt1187 /= 2;
@@ -13039,6 +13219,9 @@ public class Client extends GameApplet {
 	 * Displays an interface over the sidebar area.
 	 */
 	public void inventoryOverlay(int interfaceId, int sideInterfaceId) {
+		if (openWalkableInterface != -1) {
+			openWalkableInterface = -1;
+		}
 		if (backDialogueId != -1) {
 			backDialogueId = -1;
 			updateChatbox = true;
@@ -13163,6 +13346,25 @@ public class Client extends GameApplet {
 					specialEnabled = incoming.readNegUByte();
 				} catch (Exception e) {
 					e.printStackTrace();
+				}
+				opcode = -1;
+				return true;
+			}
+
+			if (opcode == 240) {
+				// Receive WASD mode setting from server
+				wasdCameraEnabled = incoming.readUnsignedByte() == 1;
+				if (wasdCameraEnabled) {
+					chatInputActive = false;
+				}
+				opcode = -1;
+				return true;
+			}
+
+			if (opcode == 243) {
+				// Receive hotkey mappings from server
+				for (int i = 0; i < 9; i++) {
+					hotkeyMappings[i] = incoming.readUnsignedByte();
 				}
 				opcode = -1;
 				return true;
@@ -14971,6 +15173,10 @@ public class Client extends GameApplet {
 	private String reportAbuseInput;
 	private int localPlayerIndex;
 	private boolean menuOpen;
+
+	public boolean isMenuOpen() {
+		return menuOpen;
+	}
 	private int anInt886;
 	private String inputString;
 	private final int maxPlayers;

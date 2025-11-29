@@ -1,6 +1,7 @@
 package com.elvarg.world.content;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.elvarg.engine.task.Task;
 import com.elvarg.engine.task.TaskManager;
@@ -24,7 +25,7 @@ public class PrayerHandler {
 	 * 
 	 * @author relex lawl
 	 */
-	private enum PrayerData {
+	public enum PrayerData {
 		THICK_SKIN(1, 1, 5609, 83), BURST_OF_STRENGTH(4, 1, 5610, 84), CLARITY_OF_THOUGHT(7, 1, 5611, 85), SHARP_EYE(8,
 				1, 19812, 700), MYSTIC_WILL(9, 1, 19814, 701), ROCK_SKIN(10, 2, 5612, 86), SUPERHUMAN_STRENGTH(13, 1.5,
 						5613, 87), IMPROVED_REFLEXES(16, 1.5, 5614, 88), RAPID_RESTORE(19, .4, 5615, 89), RAPID_HEAL(22,
@@ -131,6 +132,32 @@ public class PrayerHandler {
 				actionButton.put(pd.buttonId, pd);
 			}
 		}
+	} // End of PrayerData enum
+
+	private static final Map<Integer, Integer> QUICK_PRAYER_BUTTON_TO_ORDINAL = new HashMap<>();
+	private static final Map<Integer, Integer> PRAYER_ORDINAL_TO_CLIENT_CONFIG = new HashMap<>();
+
+	static {
+		int prayerOrdinal = 0;
+		// Buttons 17202-17228 map to ordinals, but skip 24, 27, 28 (bonus prayers use dedicated buttons)
+		for (int buttonId = 17202, clientConfigId = 630; buttonId <= 17228; buttonId++, clientConfigId++) {
+			// Skip ordinals 24, 27, 28 - they will use buttons 17234-17236
+			while (prayerOrdinal == 24 || prayerOrdinal == 27 || prayerOrdinal == 28) {
+				prayerOrdinal++;
+			}
+			if (prayerOrdinal < PrayerData.values().length) {
+				QUICK_PRAYER_BUTTON_TO_ORDINAL.put(buttonId, prayerOrdinal);
+				PRAYER_ORDINAL_TO_CLIENT_CONFIG.put(prayerOrdinal, clientConfigId);
+				prayerOrdinal++;
+			}
+		}
+		// Add the 3 bonus prayers with their dedicated buttons and configs
+		QUICK_PRAYER_BUTTON_TO_ORDINAL.put(17234, 24); // Preserve button → ordinal 24
+		PRAYER_ORDINAL_TO_CLIENT_CONFIG.put(24, 657); // Preserve uses config 657
+		QUICK_PRAYER_BUTTON_TO_ORDINAL.put(17235, 27); // Rigour button → ordinal 27
+		PRAYER_ORDINAL_TO_CLIENT_CONFIG.put(27, 658); // Rigour uses config 658
+		QUICK_PRAYER_BUTTON_TO_ORDINAL.put(17236, 28); // Augury button → ordinal 28
+		PRAYER_ORDINAL_TO_CLIENT_CONFIG.put(28, 659); // Augury uses config 659
 	}
 
 	/**
@@ -167,6 +194,30 @@ public class PrayerHandler {
 	 *            The button the player is clicking.
 	 */
 	public static boolean togglePrayer(Player player, final int buttonId) {
+		// Handle quick prayer toggle button
+		if (buttonId == QUICK_PRAYERS_TOGGLE_BUTTON) {
+			sendQuickPrayersClick(player);
+			return true;
+		}
+
+		// Handle quick prayer selection interface button
+		if (buttonId == QUICK_PRAYERS_SELECT_BUTTON) {
+			sendQuickPrayersInterface(player); // Call the new method
+			return true;
+		}
+		
+		// Handle "Confirm Selection" button
+		if (buttonId == 17231) {
+			sendConfirmQuickPrayers(player);
+			return true;
+		}
+
+		// Handle individual prayer selection buttons within the quick prayers interface
+		if ((buttonId >= 17202 && buttonId <= 17228) || (buttonId >= 17234 && buttonId <= 17236)) {
+			handleQuickPrayerSelectionButton(player, buttonId);
+			return true;
+		}
+
 		PrayerData prayerData = PrayerData.actionButton.get(buttonId);
 		if (prayerData != null) {
 			if (!player.getPrayerActive()[prayerData.ordinal()])
@@ -500,6 +551,180 @@ public class PrayerHandler {
 		}
 	}
 
+
+
+
+
+
+
+
+
+	public static void sendQuickPrayersClick(Player player) {
+		player.setQuickPrayersActive(!player.isQuickPrayersActive());
+		player.getPacketSender().sendConfig(QUICK_PRAYERS_CONFIG_ID, player.isQuickPrayersActive() ? 1 : 0);
+
+		// Activate/deactivate selected quick prayers
+		boolean[] quickPrayers = player.getQuickPrayersSelection();
+		for (int i = 0; i < quickPrayers.length; i++) {
+			if (quickPrayers[i]) { // If this prayer is selected for quick prayers
+				PrayerData pd = PrayerData.prayerData.get(i);
+				if (pd != null) {
+					if (player.isQuickPrayersActive()) {
+						activatePrayer(player, i); // Activate it
+						player.getPacketSender().sendConsoleMessage("Quick Prayer ON: " + pd.getPrayerName() + " (Ordinal: " + i + ")");
+					} else {
+						deactivatePrayer(player, i); // Deactivate it
+						player.getPacketSender().sendConsoleMessage("Quick Prayer OFF: " + pd.getPrayerName() + " (Ordinal: " + i + ")");
+					}
+				}
+			}
+		}
+	}
+
+public static void handleQuickPrayerSelectionButton(Player player, int buttonId) {
+    Integer prayerOrdinal = QUICK_PRAYER_BUTTON_TO_ORDINAL.get(buttonId);
+    if (prayerOrdinal == null) {
+        player.getPacketSender().sendConsoleMessage("ERROR: Unmapped quick prayer button clicked: " + buttonId);
+        return; // Not a quick prayer selection button
+    }
+
+    // Toggle the prayer in the player's quickPrayersSelection
+    boolean[] selection = player.getQuickPrayersSelection();
+    if (prayerOrdinal < selection.length) {
+        PrayerData pd = PrayerData.prayerData.get(prayerOrdinal);
+        if (pd != null) {
+            player.getPacketSender().sendConsoleMessage(
+                "Clicked Quick Prayer: " + pd.getPrayerName() + " (Ordinal: " + prayerOrdinal + ")"
+            );
+
+            // If selecting (not deselecting), check for conflicts with other prayers
+            // Use the same conflict logic as activatePrayer
+            if (!selection[prayerOrdinal]) {
+                switch (prayerOrdinal) {
+                case THICK_SKIN:
+                case ROCK_SKIN:
+                case STEEL_SKIN:
+                    uncheckPrayersInSelection(player, selection, DEFENCE_PRAYERS, prayerOrdinal);
+                    break;
+                case BURST_OF_STRENGTH:
+                case SUPERHUMAN_STRENGTH:
+                case ULTIMATE_STRENGTH:
+                    uncheckPrayersInSelection(player, selection, STRENGTH_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, RANGED_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, MAGIC_PRAYERS, prayerOrdinal);
+                    break;
+                case CLARITY_OF_THOUGHT:
+                case IMPROVED_REFLEXES:
+                case INCREDIBLE_REFLEXES:
+                    uncheckPrayersInSelection(player, selection, ATTACK_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, RANGED_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, MAGIC_PRAYERS, prayerOrdinal);
+                    break;
+                case SHARP_EYE:
+                case HAWK_EYE:
+                case EAGLE_EYE:
+                case MYSTIC_WILL:
+                case MYSTIC_LORE:
+                case MYSTIC_MIGHT:
+                    uncheckPrayersInSelection(player, selection, STRENGTH_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, ATTACK_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, RANGED_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, MAGIC_PRAYERS, prayerOrdinal);
+                    break;
+                case CHIVALRY:
+                case PIETY:
+                case RIGOUR:
+                case AUGURY:
+                    uncheckPrayersInSelection(player, selection, DEFENCE_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, STRENGTH_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, ATTACK_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, RANGED_PRAYERS, prayerOrdinal);
+                    uncheckPrayersInSelection(player, selection, MAGIC_PRAYERS, prayerOrdinal);
+                    break;
+                case PROTECT_FROM_MAGIC:
+                case PROTECT_FROM_MISSILES:
+                case PROTECT_FROM_MELEE:
+                    uncheckPrayersInSelection(player, selection, OVERHEAD_PRAYERS, prayerOrdinal);
+                    break;
+                case RETRIBUTION:
+                case REDEMPTION:
+                case SMITE:
+                    uncheckPrayersInSelection(player, selection, OVERHEAD_PRAYERS, prayerOrdinal);
+                    break;
+                }
+            }
+
+            selection[prayerOrdinal] = !selection[prayerOrdinal]; // Toggle the prayer
+
+            // Send config to update the client-side checkmark
+            // Array logic: true = selected, false = unselected
+            // Config logic: 0 = checked, 1 = unchecked
+            Integer clientConfigId = PRAYER_ORDINAL_TO_CLIENT_CONFIG.get(prayerOrdinal);
+            if (clientConfigId != null) {
+                player.getPacketSender().sendConfig(clientConfigId, selection[prayerOrdinal] ? 0 : 1);
+            }
+        }
+    }
+}
+
+	/**
+	 * Unchecks prayers in a category from the quick prayers selection array
+	 * and updates their client configs
+	 *
+	 * @param player The player
+	 * @param selection The quick prayers selection array
+	 * @param prayers The category of prayers to uncheck
+	 * @param exceptPrayerId The prayer to exclude from unchecking
+	 */
+	private static void uncheckPrayersInSelection(Player player, boolean[] selection, int[] prayers, int exceptPrayerId) {
+		for (int prayerId : prayers) {
+			if (prayerId != exceptPrayerId && prayerId < selection.length) {
+				if (selection[prayerId]) {
+					selection[prayerId] = false;
+					// Update client config for unchecked prayer
+					// Array logic: true = selected, false = unselected
+					// Config logic: 0 = checked, 1 = unchecked
+					Integer configId = PRAYER_ORDINAL_TO_CLIENT_CONFIG.get(prayerId);
+					if (configId != null) {
+						player.getPacketSender().sendConfig(configId, 1);
+					}
+				}
+			}
+		}
+	}
+
+	public static void sendConfirmQuickPrayers(Player player) {
+		// Restore the normal prayer book interface to tab 5
+		player.getPacketSender().sendTabInterface(5, 5608);
+		player.getPacketSender().sendMessage("Your quick prayers have been saved.");
+
+		// Update the quick prayers orb config to reflect any changes
+		player.getPacketSender().sendConfig(QUICK_PRAYERS_CONFIG_ID, player.isQuickPrayersActive() ? 1 : 0);
+	}
+
+	public static void sendQuickPrayersInterface(Player player) {
+		// Switch to prayer tab and set the quick prayers interface
+		player.getPacketSender().sendTab(5);
+		player.getPacketSender().sendTabInterface(5, 17200);
+
+		// Initialize ALL quick prayer configs to unchecked (1) first
+		for (int configId = 630; configId <= 659; configId++) {
+			player.getPacketSender().sendConfig(configId, 1);
+		}
+
+		// Then set the selected prayers to checked (0)
+		// Array logic: true = selected, false = unselected
+		// Config logic: 0 = checked, 1 = unchecked
+		boolean[] selection = player.getQuickPrayersSelection();
+		for (int prayerOrdinal = 0; prayerOrdinal < selection.length; prayerOrdinal++) {
+			Integer clientConfigId = PRAYER_ORDINAL_TO_CLIENT_CONFIG.get(prayerOrdinal);
+			if (clientConfigId != null && selection[prayerOrdinal]) {
+				// If true (selected), send 0 (checked)
+				player.getPacketSender().sendConfig(clientConfigId, 0);
+			}
+		}
+	}
+
 	/**
 	 * Checks if action button ID is a prayer button.
 	 * 
@@ -555,4 +780,9 @@ public class PrayerHandler {
 	 * Contains every protection prayer
 	 */
 	public static final int[] PROTECTION_PRAYERS = { PROTECT_FROM_MAGIC, PROTECT_FROM_MISSILES, PROTECT_FROM_MELEE };
+
+	// Custom quick prayer constants
+	public static final int QUICK_PRAYERS_TOGGLE_BUTTON = 20000;
+	public static final int QUICK_PRAYERS_SELECT_BUTTON = 20001;
+	public static final int QUICK_PRAYERS_CONFIG_ID = 40000;
 }

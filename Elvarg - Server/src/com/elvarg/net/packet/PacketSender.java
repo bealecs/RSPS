@@ -396,6 +396,14 @@ public class PacketSender {
 		return this;
 	}
 
+	public PacketSender sendTabOverlay(int mainInterfaceId, int overlayInterfaceId) {
+		PacketBuilder out = new PacketBuilder(PacketConstants.SEND_DUO_INTERFACE); // Opcode 248
+		out.putShort(mainInterfaceId, ValueType.A); // Corresponds to incoming.readUShortA()
+		out.putShort(overlayInterfaceId); // Corresponds to incoming.readUShort()
+		player.getSession().write(out);
+		return this;
+	}
+
 	public PacketSender sendFlashingSidebar(int id) {
 		PacketBuilder out = new PacketBuilder(24);
 		out.put(id, ValueType.S);
@@ -1015,6 +1023,28 @@ public class PacketSender {
 
 	public PacketSender sendObjectsRemoval(int chunkX, int chunkY, int height) {
 		player.getSession().write(new PacketBuilder(153).put(chunkX).put(chunkY).put(height));
+		return this;
+	}
+
+	/**
+	 * Sends the WASD camera mode state to the client.
+	 *
+	 * @param enabled Whether WASD mode is enabled
+	 * @return The PacketSender instance.
+	 */
+	public PacketSender sendWasdMode(boolean enabled) {
+		PacketBuilder out = new PacketBuilder(240);
+		out.put(enabled ? 1 : 0);
+		player.getSession().write(out);
+		return this;
+	}
+
+	public PacketSender sendHotkeyMappings(int[] mappings) {
+		PacketBuilder out = new PacketBuilder(243);
+		for (int i = 0; i < 9 && i < mappings.length; i++) {
+			out.put(mappings[i]);
+		}
+		player.getSession().write(out);
 		return this;
 	}
 }
