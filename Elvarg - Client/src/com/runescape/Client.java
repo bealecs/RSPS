@@ -282,7 +282,7 @@ public class Client extends GameApplet {
 	public static int screenAreaWidth = 512;
 	public static int screenAreaHeight = 334;
 	public static int cameraZoom = 600;
-	public static int[] hotkeyMappings = new int[9]; // Hotkey mappings for keys 1-5, Q, E, R, Tab
+	public static int[] hotkeyMappings = new int[10]; // Hotkey mappings: which key is assigned to each of 10 actions
 	public static boolean showChatComponents = true;
 	public static boolean showTabComponents = true;
 	public static boolean changeTabArea = frameMode == ScreenMode.FIXED ? false : true;
@@ -5531,16 +5531,17 @@ public class Client extends GameApplet {
 			case 15330: // Close button
 				closeHotkeyMappingInterface();
 				break;
-			// Hotkey configuration buttons
-			case 15311: configureHotkey(0); break; // Key 1
-			case 15313: configureHotkey(1); break; // Key 2
-			case 15315: configureHotkey(2); break; // Key 3
-			case 15317: configureHotkey(3); break; // Key 4
-			case 15319: configureHotkey(4); break; // Key 5
-			case 15321: configureHotkey(5); break; // Key Q
-			case 15323: configureHotkey(6); break; // Key E
-			case 15325: configureHotkey(7); break; // Key R
-			case 15327: configureHotkey(8); break; // Key Tab
+			// Hotkey configuration buttons - now assigning keys to actions
+			case 15311: configureHotkey(0); break; // Inventory
+			case 15313: configureHotkey(1); break; // Prayer
+			case 15315: configureHotkey(2); break; // Spellbook
+			case 15317: configureHotkey(3); break; // Equipment
+			case 15319: configureHotkey(4); break; // Clan Chat
+			case 15321: configureHotkey(5); break; // Friends
+			case 15323: configureHotkey(6); break; // Settings
+			case 15325: configureHotkey(7); break; // Emotes
+			case 15327: configureHotkey(8); break; // Special Attack
+			case 15329: configureHotkey(9); break; // Quick Prayers
 			// Zoom controls removed from settings tab
 			case 32506:
 				bankTabShow = BankTabShow.FIRST_ITEM_IN_TAB;
@@ -7316,77 +7317,150 @@ public class Client extends GameApplet {
 		tabAreaAltered = true;
 	}
 
-	private static int configuringHotkeyIndex = -1; // -1 = not configuring, 0-8 = hotkey index being configured
-	private static final String[] HOTKEY_ACTION_NAMES = {
-		"None", "Inventory", "Prayer", "Spellbook", "Equipment", "Clan Chat",
+	private static int configuringHotkeyIndex = -1; // -1 = not configuring, 0-9 = action index being configured
+	public static boolean waitingForKeyPress = false; // Whether we're waiting for user to press a key
+
+	private static final String[] ACTION_NAMES = {
+		"Inventory", "Prayer", "Spellbook", "Equipment", "Clan Chat",
 		"Friends", "Settings", "Emotes", "Special Attack", "Quick Prayers"
 	};
 
 	public static void openHotkeyMappingInterface() {
 		updateHotkeyInterfaceText();
-		instance.showInterface(15300);
+		// Switch tab 13 (More Options tab) to show the hotkey mapping interface
+		tabInterfaceIDs[13] = 15300;
+		tabAreaAltered = true;
 	}
 
 	public static void closeHotkeyMappingInterface() {
-		openInterfaceId = -1;
+		// Switch tab 13 back to the More Options interface
+		tabInterfaceIDs[13] = 15200;
+		tabAreaAltered = true;
 		configuringHotkeyIndex = -1;
 	}
 
 	public static void updateHotkeyInterfaceText() {
-		// Update the action text for each hotkey based on current mappings
-		for (int i = 0; i < 9; i++) {
-			int actionId = hotkeyMappings[i];
-			String actionName = (actionId >= 0 && actionId < HOTKEY_ACTION_NAMES.length) ?
-				HOTKEY_ACTION_NAMES[actionId] : "None";
-			Widget.interfaceCache[15311 + (i * 2)].defaultText = actionName;
+		// Update the key assignment text for each action based on current mappings
+		for (int i = 0; i < 10; i++) {
+			String displayText;
+			if (waitingForKeyPress && configuringHotkeyIndex == i) {
+				displayText = "Press a key...";
+			} else {
+				displayText = getKeyName(hotkeyMappings[i]);
+			}
+			Widget.interfaceCache[15311 + (i * 2)].defaultText = displayText;
 		}
 	}
 
-	public static void configureHotkey(int hotkeyIndex) {
-		configuringHotkeyIndex = hotkeyIndex;
-		// Cycle through available actions
-		hotkeyMappings[hotkeyIndex] = (hotkeyMappings[hotkeyIndex] + 1) % HOTKEY_ACTION_NAMES.length;
+	public static void configureHotkey(int actionIndex) {
+		// Enter key capture mode - wait for user to press a key
+		configuringHotkeyIndex = actionIndex;
+		waitingForKeyPress = true;
 		updateHotkeyInterfaceText();
-		// Send packet to server to save mapping
-		instance.sendPacket(new com.runescape.io.packets.outgoing.impl.HotkeyMapping(hotkeyIndex, hotkeyMappings[hotkeyIndex]));
 	}
 
-	public static boolean executeHotkeyAction(int actionId) {
-		// 0: None, 1: Inventory, 2: Prayer, 3: Spellbook, 4: Equipment,
-		// 5: Clan Chat, 6: Friends, 7: Settings, 8: Emotes, 9: Special Attack, 10: Quick Prayers
-		switch (actionId) {
-			case 0: // None
-				return false;
-			case 1: // Inventory
+	public static void assignKeyToAction(int keyCode, char keyChar) {
+		if (!waitingForKeyPress || configuringHotkeyIndex == -1) {
+			return;
+		}
+
+		// Convert keyCode/keyChar to our key name
+		String keyName = getKeyNameFromCode(keyCode, keyChar);
+
+		// Don't allow W, A, S, D (camera controls)
+		if (keyName.equals("W") || keyName.equals("A") || keyName.equals("S") || keyName.equals("D")) {
+			instance.sendMessage("That key is reserved for camera controls.", 0, "");
+			waitingForKeyPress = false;
+			configuringHotkeyIndex = -1;
+			updateHotkeyInterfaceText();
+			return;
+		}
+
+		// Clear this key from any other actions first (mutual exclusivity)
+		for (int i = 0; i < hotkeyMappings.length; i++) {
+			if (i != configuringHotkeyIndex && getKeyName(hotkeyMappings[i]).equals(keyName)) {
+				hotkeyMappings[i] = 0; // Clear the old assignment
+				instance.sendPacket(new com.runescape.io.packets.outgoing.impl.HotkeyMapping(i, 0));
+			}
+		}
+
+		// Store the key code directly
+		hotkeyMappings[configuringHotkeyIndex] = keyCode;
+
+		// Send to server
+		instance.sendPacket(new com.runescape.io.packets.outgoing.impl.HotkeyMapping(
+			configuringHotkeyIndex, keyCode));
+
+		// Exit key capture mode
+		waitingForKeyPress = false;
+		configuringHotkeyIndex = -1;
+		updateHotkeyInterfaceText();
+	}
+
+	private static String getKeyName(int keyCode) {
+		if (keyCode == 0) return "None";
+		return getKeyNameFromCode(keyCode, (char) keyCode);
+	}
+
+	private static String getKeyNameFromCode(int keyCode, char keyChar) {
+		// Special keys
+		if (keyCode == 9) return "Tab";
+		if (keyCode == 16) return "Shift";
+		if (keyCode == 17) return "Ctrl";
+		if (keyCode == 32) return "Space";
+		if (keyCode == 27) return "Esc";
+
+		// Number keys (48-57 = 0-9)
+		if (keyCode >= 48 && keyCode <= 57) {
+			return String.valueOf((char) keyCode);
+		}
+
+		// Letter keys (65-90 = A-Z)
+		if (keyCode >= 65 && keyCode <= 90) {
+			return String.valueOf((char) keyCode);
+		}
+
+		// Default to character representation
+		if (Character.isLetterOrDigit(keyChar)) {
+			return String.valueOf(Character.toUpperCase(keyChar));
+		}
+
+		return "Key " + keyCode;
+	}
+
+	public static boolean executeHotkeyAction(int actionIndex) {
+		// 0: Inventory, 1: Prayer, 2: Spellbook, 3: Equipment, 4: Clan Chat,
+		// 5: Friends, 6: Settings, 7: Emotes, 8: Special Attack, 9: Skills
+		switch (actionIndex) {
+			case 0: // Inventory
 				setTab(3);
 				return true;
-			case 2: // Prayer
+			case 1: // Prayer
 				setTab(5);
 				return true;
-			case 3: // Spellbook
+			case 2: // Spellbook
 				setTab(6);
 				return true;
-			case 4: // Equipment
-				setTab(1);
+			case 3: // Equipment
+				setTab(4);
 				return true;
-			case 5: // Clan Chat
+			case 4: // Clan Chat
 				setTab(7);
 				return true;
-			case 6: // Friends
+			case 5: // Friends
 				setTab(8);
 				return true;
-			case 7: // Settings
-				setTab(2);
+			case 6: // Settings
+				setTab(12);
 				return true;
-			case 8: // Emotes
-				setTab(9);
+			case 7: // Emotes
+				setTab(11);
 				return true;
-			case 9: // Special Attack
+			case 8: // Special Attack
 				setTab(0);
 				return true;
-			case 10: // Quick Prayers
-				// Toggle quick prayers
-				instance.sendPacket(new ClickButton(10000));
+			case 9: // Skills
+				setTab(1);
 				return true;
 			default:
 				return false;

@@ -18,7 +18,9 @@
       "Bash(python update_item_stats.py:*)",
       "Bash(tee:*)",
       "Bash(python update_all_items.py:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(python -u update_all_items.py:*)",
+      "Bash(./build-client.bat)"
     ],
     "deny": [],
     "ask": []

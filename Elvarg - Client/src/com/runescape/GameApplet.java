@@ -530,23 +530,22 @@ public class GameApplet extends Applet implements Runnable, MouseListener,
     int i = keyevent.getKeyCode();
     int j = keyevent.getKeyChar();
 
-    // Hotkey mapping system - Check if hotkey is pressed
-    if (Client.instance != null && !Client.instance.isChatInputActive()) {
-        int hotkeyIndex = -1;
-        if (i == KeyEvent.VK_1) hotkeyIndex = 0;
-        else if (i == KeyEvent.VK_2) hotkeyIndex = 1;
-        else if (i == KeyEvent.VK_3) hotkeyIndex = 2;
-        else if (i == KeyEvent.VK_4) hotkeyIndex = 3;
-        else if (i == KeyEvent.VK_5) hotkeyIndex = 4;
-        else if (i == KeyEvent.VK_Q) hotkeyIndex = 5;
-        else if (i == KeyEvent.VK_E) hotkeyIndex = 6;
-        else if (i == KeyEvent.VK_R) hotkeyIndex = 7;
-        else if (i == KeyEvent.VK_TAB) hotkeyIndex = 8;
+    // Hotkey assignment - If we're waiting for a key press to assign
+    if (Client.instance != null && Client.waitingForKeyPress) {
+        Client.assignKeyToAction(i, (char) j);
+        return; // Don't process this key press further
+    }
 
-        if (hotkeyIndex >= 0 && hotkeyIndex < Client.hotkeyMappings.length) {
-            int actionId = Client.hotkeyMappings[hotkeyIndex];
-            if (Client.executeHotkeyAction(actionId)) {
-                return; // Action executed, don't process default behavior
+    // Hotkey mapping system - Check if pressed key is assigned to any action
+    if (Client.instance != null && !Client.instance.isChatInputActive()) {
+        // Loop through all actions to see if this key is assigned to any
+        for (int actionIndex = 0; actionIndex < Client.hotkeyMappings.length; actionIndex++) {
+            int assignedKeyCode = Client.hotkeyMappings[actionIndex];
+            if (assignedKeyCode == i) {
+                // This key is assigned to this action - execute it
+                if (Client.executeHotkeyAction(actionIndex)) {
+                    return; // Action executed, don't process default behavior
+                }
             }
         }
     }

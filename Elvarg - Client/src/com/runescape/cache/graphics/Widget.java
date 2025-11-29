@@ -1426,39 +1426,46 @@ public final class Widget {
 		addText(15302, "Hotkey Mapping", tda, 2, 0xFF981F, true, true);
 
 		// Instructions
-		addText(15303, "Click a hotkey to change its action", tda, 0, 0x9F9F9F, true, true);
+		addText(15303, "Click an action to assign a key", tda, 0, 0x9F9F9F, true, true);
 
-		// Hotkey labels and action texts
-		// Keys: 1, 2, 3, 4, 5, Q, E, R, Tab (indices 0-8)
-		String[] keyLabels = {"Key 1:", "Key 2:", "Key 3:", "Key 4:", "Key 5:",
-		                       "Key Q:", "Key E:", "Key R:", "Key Tab:"};
+		// Action labels (static) and key assignments (dynamic/clickable)
+		// Actions: Inventory, Prayer, Spellbook, Equipment, Clan Chat, Friends, Settings, Emotes, Special Attack, Skills
+		String[] actionLabels = {
+			"Inventory:", "Prayer:", "Spellbook:", "Equipment:", "Clan Chat:",
+			"Friends:", "Settings:", "Emotes:", "Special Attack:", "Skills:"
+		};
 
 		int startId = 15310;
-		for (int i = 0; i < 9; i++) {
-			// Key label (e.g., "Key 1:")
-			addText(startId + (i * 2), keyLabels[i], tda, 1, 0xFF9040, false, true);
-			// Action text (clickable - will show current action)
-			addHoverText(startId + (i * 2) + 1, "None", "Click to configure", tda, 0, 0xFFFFFF, false, true, 100, 0xFF9040);
+		for (int i = 0; i < 10; i++) {
+			// Action label (static, e.g., "Inventory:")
+			addText(startId + (i * 2), actionLabels[i], tda, 1, 0xFF9040, false, true);
+			// Key assignment text (clickable - will show assigned key or prompt)
+			addHoverText(startId + (i * 2) + 1, "Click to select", "Click then press a key", tda, 0, 0xFFFFFF, false, true, 120, 0xFF9040);
+			interfaceCache[startId + (i * 2) + 1].atActionType = OPTION_RESET_SETTING; // Set to 5 for action 646
 		}
 
-		// Close button
-		addHoverText(15330, "Close", "Close this interface", tda, 1, 0xFF9040, true, true, 100, 0xFFFFFF);
+		// Close button (X in top right corner)
+		addHoverButton_sprite_loader(15330, 137, 17, 17, "Close", -1, 15331, 1);
+		addHoveredButton_sprite_loader(15331, 138, 17, 17, 15332);
+		interfaceCache[15330].atActionType = OPTION_RESET_SETTING; // Set to 5 for action 646
 
 		// Add all children
-		tab.totalChildren(22);
+		tab.totalChildren(25); // 10 actions * 2 + background + title + instructions + close button + hovered button
 		tab.child(frame++, 15301, 0, 22);      // Background sprite
-		tab.child(frame++, 15302, 95, 30);     // Title
-		tab.child(frame++, 15303, 95, 50);     // Instructions
+		tab.child(frame++, 15302, 95, 5);     // Title (moved up by 20)
+		tab.child(frame++, 15303, 95, 27);     // Instructions
 
-		// Add hotkey rows (9 keys * 2 elements each)
-		int yPos = 75;
-		for (int i = 0; i < 9; i++) {
-			tab.child(frame++, 15310 + (i * 2), 20, yPos);         // Key label
-			tab.child(frame++, 15310 + (i * 2) + 1, 80, yPos);     // Action text
+		// Add action rows (10 actions * 2 elements each)
+		int yPos = 45;
+		for (int i = 0; i < 10; i++) {
+			tab.child(frame++, 15310 + (i * 2), 20, yPos);         // Action label
+			tab.child(frame++, 15310 + (i * 2) + 1, 120, yPos);    // Key assignment text
 			yPos += 20;
 		}
 
-		tab.child(frame++, 15330, 95, 270);    // Close button
+		// Close button in top right corner
+		tab.child(frame++, 15330, 173, 3);     // Close button
+		tab.child(frame++, 15331, 173, 3);     // Close button hovered
 	}
 
 	public static void displayOptionsTab(GameFont[] tda) {
@@ -1484,6 +1491,7 @@ public final class Widget {
 
 		// Fixed mode button
 		addHoverText(15203, "Fixed Mode", "Switch to Fixed Mode", tda, 1, 0xff9b00, false, true, 150);
+		interfaceCache[15203].atActionType = OPTION_RESET_SETTING; // Set to 5 for action 646
 		addText(15204, "Classic 765x503 resolution", tda, 0, 0xcccccc, false, true);
 
 		// Divider line between options
@@ -1496,6 +1504,7 @@ public final class Widget {
 
 		// Resizable mode button
 		addHoverText(15205, "Resizable Mode", "Switch to Resizable Mode", tda, 1, 0xff9b00, false, true, 150);
+		interfaceCache[15205].atActionType = OPTION_RESET_SETTING; // Set to 5 for action 646
 		addText(15206, "Adjusts to your window size", tda, 0, 0xcccccc, false, true);
 
 		// Additional divider
@@ -1508,11 +1517,12 @@ public final class Widget {
 
 		// Hotkey Mapping button
 		addHoverText(15220, "Hotkey Mapping", "Configure hotkeys for actions", tda, 1, 0xff9b00, false, true, 150);
+		interfaceCache[15220].atActionType = OPTION_RESET_SETTING; // Set to 5 for action 646
 		addText(15221, "Map keys to actions", tda, 0, 0xcccccc, false, true);
 
 		tab.totalChildren(10);
 		tab.child(frame++, 15201, 0, 22);      // Background sprite
-		tab.child(frame++, 15202, 95, 30);     // Title
+		tab.child(frame++, 15202, 95, 5);     // Title
 
 		// Fixed mode section
 		tab.child(frame++, 15203, 15, 50);     // Fixed mode button text

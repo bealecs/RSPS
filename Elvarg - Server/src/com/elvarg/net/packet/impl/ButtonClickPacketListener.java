@@ -122,6 +122,14 @@ public class ButtonClickPacketListener implements PacketListener {
 					TeleportType.NORMAL);
 			break;
 
+		case WORLD_MAP_ORB:
+			if (!player.busy()) {
+				player.getPacketSender().sendInterface(595);
+			} else {
+				player.getPacketSender().sendMessage("You cannot do that right now.");
+			}
+			break;
+
 		case AUTOCAST_BUTTON_1:
 		case AUTOCAST_BUTTON_2:
 			player.getPacketSender()
@@ -221,6 +229,7 @@ public class ButtonClickPacketListener implements PacketListener {
 	private static final int CANCEL_DESTROY_ITEM = 14176;
 	private static final int PRICE_CHECKER_WITHDRAW_ALL = 18255;
 	private static final int PRICE_CHECKER_DEPOSIT_ALL = 18252;
+	private static final int WORLD_MAP_ORB = 850;
 
 	// Magic spell buttons
 	private static final int HOME_TELEPORT_BUTTON = 39101;

@@ -3,8 +3,8 @@
   "password": "test",
   "staff-rights": "ADMINISTRATOR",
   "position": {
-    "x": 3087,
-    "y": 3501,
+    "x": 3094,
+    "y": 3497,
     "z": 0
   },
   "spell-book": "NORMAL",
@@ -17,15 +17,15 @@
   "wasd-mode": true,
   "unlimited-run-energy": true,
   "hotkey-mappings": [
+    49,
+    50,
+    51,
+    52,
+    67,
     0,
     0,
     0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
+    81
   ],
   "quick-prayers-active": false,
   "quick-prayers-selection": [
@@ -41,11 +41,12 @@
     false,
     false,
     false,
+    true,
     false,
     false,
     false,
     false,
-    false,
+    true,
     false,
     false,
     false,
@@ -53,25 +54,24 @@
     false,
     false,
     true,
-    true,
     false,
     false,
-    true,
+    false,
     false
   ],
   "has-veng": false,
-  "last-veng": -30493,
+  "last-veng": -33617,
   "running": true,
   "run-energy": 100,
   "spec-percentage": 100,
   "recoil-damage": 0,
   "poison-damage": 0,
-  "poison-immunity": -30493,
-  "overload-timer": -30493,
-  "fire-immunity": -30493,
-  "teleblock-timer": -30493,
-  "prayerblock-timer": -30493,
-  "skull-timer": -50879,
+  "poison-immunity": -33617,
+  "overload-timer": -33617,
+  "fire-immunity": -33617,
+  "teleblock-timer": -33617,
+  "prayerblock-timer": -33617,
+  "skull-timer": -56088,
   "target-kills": 0,
   "normal-kills": 0,
   "deaths": 0,
@@ -83,27 +83,27 @@
       "slot": 0
     },
     {
-      "id": 4151,
+      "id": 10348,
       "amount": 1,
       "slot": 1
     },
     {
-      "id": -1,
-      "amount": 0,
+      "id": 11802,
+      "amount": 1,
       "slot": 2
     },
     {
-      "id": -1,
-      "amount": 0,
+      "id": 4151,
+      "amount": 1,
       "slot": 3
     },
     {
-      "id": -1,
-      "amount": 0,
+      "id": 995,
+      "amount": 10,
       "slot": 4
     },
     {
-      "id": 11802,
+      "id": 10346,
       "amount": 1,
       "slot": 5
     },
@@ -240,8 +240,8 @@
       "slot": 3
     },
     {
-      "id": 10348,
-      "amount": 1,
+      "id": -1,
+      "amount": 0,
       "slot": 4
     },
     {
@@ -255,8 +255,8 @@
       "slot": 0
     },
     {
-      "id": 10346,
-      "amount": 1,
+      "id": -1,
+      "amount": 0,
       "slot": 7
     },
     {
@@ -300,8 +300,8 @@
     42,
     10,
     0,
-    0,
-    0,
+    1,
+    1,
     0,
     0
   ],
@@ -312,7 +312,7 @@
       99,
       99,
       99,
-      90,
+      87,
       99,
       99,
       99,
@@ -373,7 +373,7 @@
       13034431,
       13034431,
       13034431,
-      13034671,
+      13034681,
       13034431,
       13034431,
       13034431,
