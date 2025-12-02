@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import com.elvarg.world.collision.region.RegionClipping;
 import com.elvarg.world.entity.impl.Character;
+import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.model.Position;
 
 public class RS317PathFinder {
@@ -13,6 +14,8 @@ public class RS317PathFinder {
 			if (destX == gc.getPosition().getLocalX() && destY == gc.getPosition().getLocalY() && !moveNear) {
 				return;
 			}
+			// Check if noclip is enabled for players
+			boolean noclip = gc.isPlayer() && ((Player)gc).isNoclip();
 			final int height = gc.getPosition().getZ() % 4;
 			destX = destX - 8 * gc.getPosition().getRegionX();
 			destY = destY - 8 * gc.getPosition().getRegionY();
@@ -54,64 +57,64 @@ public class RS317PathFinder {
 				final int thisCost = cost[curX][curY] + 1;
 
 				if (curY > 0 && via[curX][curY - 1] == 0
-						&& (RegionClipping.getClipping(curAbsX, curAbsY - 1, height) & 0x1280102) == 0) {
+						&& (noclip || (RegionClipping.getClipping(curAbsX, curAbsY - 1, height) & 0x1280102) == 0)) {
 					tileQueueX.add(curX);
 					tileQueueY.add(curY - 1);
 					via[curX][curY - 1] = 1;
 					cost[curX][curY - 1] = thisCost;
 				}
 				if (curX > 0 && via[curX - 1][curY] == 0
-						&& (RegionClipping.getClipping(curAbsX - 1, curAbsY, height) & 0x1280108) == 0) {
+						&& (noclip || (RegionClipping.getClipping(curAbsX - 1, curAbsY, height) & 0x1280108) == 0)) {
 					tileQueueX.add(curX - 1);
 					tileQueueY.add(curY);
 					via[curX - 1][curY] = 2;
 					cost[curX - 1][curY] = thisCost;
 				}
 				if (curY < 104 - 1 && via[curX][curY + 1] == 0
-						&& (RegionClipping.getClipping(curAbsX, curAbsY + 1, height) & 0x1280120) == 0) {
+						&& (noclip || (RegionClipping.getClipping(curAbsX, curAbsY + 1, height) & 0x1280120) == 0)) {
 					tileQueueX.add(curX);
 					tileQueueY.add(curY + 1);
 					via[curX][curY + 1] = 4;
 					cost[curX][curY + 1] = thisCost;
 				}
 				if (curX < 104 - 1 && via[curX + 1][curY] == 0
-						&& (RegionClipping.getClipping(curAbsX + 1, curAbsY, height) & 0x1280180) == 0) {
+						&& (noclip || (RegionClipping.getClipping(curAbsX + 1, curAbsY, height) & 0x1280180) == 0)) {
 					tileQueueX.add(curX + 1);
 					tileQueueY.add(curY);
 					via[curX + 1][curY] = 8;
 					cost[curX + 1][curY] = thisCost;
 				}
 				if (curX > 0 && curY > 0 && via[curX - 1][curY - 1] == 0
-						&& (RegionClipping.getClipping(curAbsX - 1, curAbsY - 1, height) & 0x128010e) == 0
+						&& (noclip || ((RegionClipping.getClipping(curAbsX - 1, curAbsY - 1, height) & 0x128010e) == 0
 						&& (RegionClipping.getClipping(curAbsX - 1, curAbsY, height) & 0x1280108) == 0
-						&& (RegionClipping.getClipping(curAbsX, curAbsY - 1, height) & 0x1280102) == 0) {
+						&& (RegionClipping.getClipping(curAbsX, curAbsY - 1, height) & 0x1280102) == 0))) {
 					tileQueueX.add(curX - 1);
 					tileQueueY.add(curY - 1);
 					via[curX - 1][curY - 1] = 3;
 					cost[curX - 1][curY - 1] = thisCost;
 				}
 				if (curX > 0 && curY < 104 - 1 && via[curX - 1][curY + 1] == 0
-						&& (RegionClipping.getClipping(curAbsX - 1, curAbsY + 1, height) & 0x1280138) == 0
+						&& (noclip || ((RegionClipping.getClipping(curAbsX - 1, curAbsY + 1, height) & 0x1280138) == 0
 						&& (RegionClipping.getClipping(curAbsX - 1, curAbsY, height) & 0x1280108) == 0
-						&& (RegionClipping.getClipping(curAbsX, curAbsY + 1, height) & 0x1280120) == 0) {
+						&& (RegionClipping.getClipping(curAbsX, curAbsY + 1, height) & 0x1280120) == 0))) {
 					tileQueueX.add(curX - 1);
 					tileQueueY.add(curY + 1);
 					via[curX - 1][curY + 1] = 6;
 					cost[curX - 1][curY + 1] = thisCost;
 				}
 				if (curX < 104 - 1 && curY > 0 && via[curX + 1][curY - 1] == 0
-						&& (RegionClipping.getClipping(curAbsX + 1, curAbsY - 1, height) & 0x1280183) == 0
+						&& (noclip || ((RegionClipping.getClipping(curAbsX + 1, curAbsY - 1, height) & 0x1280183) == 0
 						&& (RegionClipping.getClipping(curAbsX + 1, curAbsY, height) & 0x1280180) == 0
-						&& (RegionClipping.getClipping(curAbsX, curAbsY - 1, height) & 0x1280102) == 0) {
+						&& (RegionClipping.getClipping(curAbsX, curAbsY - 1, height) & 0x1280102) == 0))) {
 					tileQueueX.add(curX + 1);
 					tileQueueY.add(curY - 1);
 					via[curX + 1][curY - 1] = 9;
 					cost[curX + 1][curY - 1] = thisCost;
 				}
 				if (curX < 104 - 1 && curY < 104 - 1 && via[curX + 1][curY + 1] == 0
-						&& (RegionClipping.getClipping(curAbsX + 1, curAbsY + 1, height) & 0x12801e0) == 0
+						&& (noclip || ((RegionClipping.getClipping(curAbsX + 1, curAbsY + 1, height) & 0x12801e0) == 0
 						&& (RegionClipping.getClipping(curAbsX + 1, curAbsY, height) & 0x1280180) == 0
-						&& (RegionClipping.getClipping(curAbsX, curAbsY + 1, height) & 0x1280120) == 0) {
+						&& (RegionClipping.getClipping(curAbsX, curAbsY + 1, height) & 0x1280120) == 0))) {
 					tileQueueX.add(curX + 1);
 					tileQueueY.add(curY + 1);
 					via[curX + 1][curY + 1] = 12;

@@ -173,6 +173,13 @@ public final class MovementQueue {
 	}
 
 	public boolean canWalk(int deltaX, int deltaY) {
+		// If noclip is enabled for players, skip collision detection
+		if (character.isPlayer()) {
+			com.elvarg.world.entity.impl.player.Player player = (com.elvarg.world.entity.impl.player.Player) character;
+			if (player.isNoclip()) {
+				return true;
+			}
+		}
 		final Position to = new Position(character.getPosition().getX() + deltaX,
 				character.getPosition().getY() + deltaY, character.getPosition().getZ());
 		if (character.getPosition().getZ() == -1 && to.getZ() == -1)

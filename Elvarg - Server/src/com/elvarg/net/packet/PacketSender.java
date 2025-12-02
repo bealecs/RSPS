@@ -690,6 +690,16 @@ public class PacketSender {
 	}
 
 	/**
+	 * Sends noclip status to client.
+	 */
+	public PacketSender sendNoclip(boolean enabled) {
+		PacketBuilder out = new PacketBuilder(126);
+		out.put(enabled ? 1 : 0);
+		player.getSession().write(out);
+		return this;
+	}
+
+	/**
 	 * Sends a hint to specified position.
 	 * 
 	 * @param position
@@ -846,6 +856,15 @@ public class PacketSender {
 		PacketBuilder out = new PacketBuilder(101);
 		out.put((object.getType() << 2) + (object.getFace() & 3), ValueType.C);
 		out.put(object.getPosition().getZ());
+		player.getSession().write(out);
+		return this;
+	}
+
+	public PacketSender sendObjectRemoval(Position position, int objectId) {
+		sendPosition(position);
+		PacketBuilder out = new PacketBuilder(101);
+		out.put(0, ValueType.C); // type 0, face 0
+		out.put(position.getZ());
 		player.getSession().write(out);
 		return this;
 	}

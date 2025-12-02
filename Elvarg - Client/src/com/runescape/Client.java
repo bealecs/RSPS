@@ -118,6 +118,8 @@ import com.runescape.io.packets.outgoing.impl.ObjectOption2;
 import com.runescape.io.packets.outgoing.impl.ObjectOption3;
 import com.runescape.io.packets.outgoing.impl.ObjectOption4;
 import com.runescape.io.packets.outgoing.impl.ObjectOption5;
+import com.runescape.io.packets.outgoing.impl.DeleteObject;
+import com.runescape.io.packets.outgoing.impl.DeleteGroundItem;
 import com.runescape.io.packets.outgoing.impl.PickupItem;
 import com.runescape.io.packets.outgoing.impl.PlayerAttackOption;
 import com.runescape.io.packets.outgoing.impl.PlayerInactive;
@@ -5908,6 +5910,26 @@ public class Client extends GameApplet {
 			sendPacket(new ObjectOption1(first + regionBaseX, clicked >> 14 & 0x7fff, button + regionBaseY));
 		}
 
+		// Delete Object (custom admin action)
+		if (action == 1500) {
+			clickObject(clicked, button, first);
+			sendPacket(new DeleteObject(first + regionBaseX, clicked >> 14 & 0x7fff, button + regionBaseY));
+		}
+
+		// Delete Ground Item (custom admin action)
+		if (action == 1501) {
+			boolean flag1 = doWalkTo(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, button,
+					localPlayer.pathX[0], false, first);
+			if (!flag1)
+				flag1 = doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, button,
+						localPlayer.pathX[0], false, first);
+			crossX = super.saveClickX;
+			crossY = super.saveClickY;
+			crossType = 2;
+			crossIndex = 0;
+			sendPacket(new DeleteGroundItem(button + regionBaseY, clicked, first + regionBaseX));
+		}
+
 
 		if (action == 169) {
 
@@ -6067,6 +6089,15 @@ public class Client extends GameApplet {
 						}
 
 				}
+				// Add Delete option for admins
+				if (myPrivilege >= 2) {
+					menuActionText[menuActionRow] = "Delete @cya@" + objectDef.name;
+					menuActionTypes[menuActionRow] = 1500;
+					selectedMenuActions[menuActionRow] = l;
+					firstMenuAction[menuActionRow] = i1;
+					secondMenuAction[menuActionRow] = j1;
+					menuActionRow++;
+				}
 				if (Configuration.enableIds
 						&& (myPrivilege >= 2 || myPrivilege <= 3)) {
 					menuActionText[menuActionRow] = "Examine @cya@" + objectDef.name
@@ -6189,6 +6220,15 @@ public class Client extends GameApplet {
 								secondMenuAction[menuActionRow] = j1;
 								menuActionRow++;
 							}
+					}
+					// Add Delete option for admins (ground items)
+					if (myPrivilege >= 2) {
+						menuActionText[menuActionRow] = "Delete @lre@" + itemDef.name;
+						menuActionTypes[menuActionRow] = 1501;
+						selectedMenuActions[menuActionRow] = item.ID;
+						firstMenuAction[menuActionRow] = i1;
+						secondMenuAction[menuActionRow] = j1;
+						menuActionRow++;
 					}
 					if (Configuration.enableIds
 							&& (myPrivilege >= 2 && myPrivilege <= 3)) {
@@ -8447,7 +8487,7 @@ public class Client extends GameApplet {
 					flag1 = true;
 					break;
 				}
-				if (i1 != 0) {
+				if (i1 != 0 && !noclipEnabled) {
 					if ((i1 < 5 || i1 == 10)
 							&& collisionMaps[plane].method219(k2, j3, k3, j, i1 - 1, i2)) {
 						flag1 = true;
@@ -8458,14 +8498,14 @@ public class Client extends GameApplet {
 						break;
 					}
 				}
-				if (k1 != 0 && k != 0
+				if (k1 != 0 && k != 0 && !noclipEnabled
 						&& collisionMaps[plane].method221(i2, k2, j3, k, l1, k1, k3)) {
 					flag1 = true;
 					break;
 				}
 				int l4 = anIntArrayArray825[j3][k3] + 1;
 				if (j3 > 0 && anIntArrayArray901[j3 - 1][k3] == 0
-						&& (ai[j3 - 1][k3] & 0x1280108) == 0) {
+						&& (noclipEnabled || (ai[j3 - 1][k3] & 0x1280108) == 0)) {
 					bigX[l3] = j3 - 1;
 					bigY[l3] = k3;
 					l3 = (l3 + 1) % j4;
@@ -8473,7 +8513,7 @@ public class Client extends GameApplet {
 					anIntArrayArray825[j3 - 1][k3] = l4;
 				}
 				if (j3 < byte0 - 1 && anIntArrayArray901[j3 + 1][k3] == 0
-						&& (ai[j3 + 1][k3] & 0x1280180) == 0) {
+						&& (noclipEnabled || (ai[j3 + 1][k3] & 0x1280180) == 0)) {
 					bigX[l3] = j3 + 1;
 					bigY[l3] = k3;
 					l3 = (l3 + 1) % j4;
@@ -8481,7 +8521,7 @@ public class Client extends GameApplet {
 					anIntArrayArray825[j3 + 1][k3] = l4;
 				}
 				if (k3 > 0 && anIntArrayArray901[j3][k3 - 1] == 0
-						&& (ai[j3][k3 - 1] & 0x1280102) == 0) {
+						&& (noclipEnabled || (ai[j3][k3 - 1] & 0x1280102) == 0)) {
 					bigX[l3] = j3;
 					bigY[l3] = k3 - 1;
 					l3 = (l3 + 1) % j4;
@@ -8489,7 +8529,7 @@ public class Client extends GameApplet {
 					anIntArrayArray825[j3][k3 - 1] = l4;
 				}
 				if (k3 < byte1 - 1 && anIntArrayArray901[j3][k3 + 1] == 0
-						&& (ai[j3][k3 + 1] & 0x1280120) == 0) {
+						&& (noclipEnabled || (ai[j3][k3 + 1] & 0x1280120) == 0)) {
 					bigX[l3] = j3;
 					bigY[l3] = k3 + 1;
 					l3 = (l3 + 1) % j4;
@@ -8497,9 +8537,9 @@ public class Client extends GameApplet {
 					anIntArrayArray825[j3][k3 + 1] = l4;
 				}
 				if (j3 > 0 && k3 > 0 && anIntArrayArray901[j3 - 1][k3 - 1] == 0
-						&& (ai[j3 - 1][k3 - 1] & 0x128010e) == 0
+						&& (noclipEnabled || ((ai[j3 - 1][k3 - 1] & 0x128010e) == 0
 						&& (ai[j3 - 1][k3] & 0x1280108) == 0
-						&& (ai[j3][k3 - 1] & 0x1280102) == 0) {
+						&& (ai[j3][k3 - 1] & 0x1280102) == 0))) {
 					bigX[l3] = j3 - 1;
 					bigY[l3] = k3 - 1;
 					l3 = (l3 + 1) % j4;
@@ -8507,9 +8547,9 @@ public class Client extends GameApplet {
 					anIntArrayArray825[j3 - 1][k3 - 1] = l4;
 				}
 				if (j3 < byte0 - 1 && k3 > 0 && anIntArrayArray901[j3 + 1][k3 - 1] == 0
-						&& (ai[j3 + 1][k3 - 1] & 0x1280183) == 0
+						&& (noclipEnabled || ((ai[j3 + 1][k3 - 1] & 0x1280183) == 0
 						&& (ai[j3 + 1][k3] & 0x1280180) == 0
-						&& (ai[j3][k3 - 1] & 0x1280102) == 0) {
+						&& (ai[j3][k3 - 1] & 0x1280102) == 0))) {
 					bigX[l3] = j3 + 1;
 					bigY[l3] = k3 - 1;
 					l3 = (l3 + 1) % j4;
@@ -8517,9 +8557,9 @@ public class Client extends GameApplet {
 					anIntArrayArray825[j3 + 1][k3 - 1] = l4;
 				}
 				if (j3 > 0 && k3 < byte1 - 1 && anIntArrayArray901[j3 - 1][k3 + 1] == 0
-						&& (ai[j3 - 1][k3 + 1] & 0x1280138) == 0
+						&& (noclipEnabled || ((ai[j3 - 1][k3 + 1] & 0x1280138) == 0
 						&& (ai[j3 - 1][k3] & 0x1280108) == 0
-						&& (ai[j3][k3 + 1] & 0x1280120) == 0) {
+						&& (ai[j3][k3 + 1] & 0x1280120) == 0))) {
 					bigX[l3] = j3 - 1;
 					bigY[l3] = k3 + 1;
 					l3 = (l3 + 1) % j4;
@@ -8527,9 +8567,9 @@ public class Client extends GameApplet {
 					anIntArrayArray825[j3 - 1][k3 + 1] = l4;
 				}
 				if (j3 < byte0 - 1 && k3 < byte1 - 1 && anIntArrayArray901[j3 + 1][k3 + 1] == 0
-						&& (ai[j3 + 1][k3 + 1] & 0x12801e0) == 0
+						&& (noclipEnabled || ((ai[j3 + 1][k3 + 1] & 0x12801e0) == 0
 						&& (ai[j3 + 1][k3] & 0x1280180) == 0
-						&& (ai[j3][k3 + 1] & 0x1280120) == 0) {
+						&& (ai[j3][k3 + 1] & 0x1280120) == 0))) {
 					bigX[l3] = j3 + 1;
 					bigY[l3] = k3 + 1;
 					l3 = (l3 + 1) % j4;
@@ -13400,6 +13440,12 @@ public class Client extends GameApplet {
 				return true;
 			}
 			
+			if(opcode == PacketConstants.UPDATE_NOCLIP) {
+				noclipEnabled = incoming.readUnsignedByte() == 1;
+				opcode = -1;
+				return true;
+			}
+			
 			if (opcode == PacketConstants.PLAYER_UPDATING) {
 				updatePlayers(packetSize, incoming);
 				validLocalMap = false;
@@ -15457,6 +15503,7 @@ public class Client extends GameApplet {
 	private Sprite compass;
 	private ProducingGraphicsBuffer chatSettingImageProducer;
 	public static Player localPlayer;
+	public static boolean noclipEnabled = false;
 	private final String[] playerOptions;
 	private final boolean[] playerOptionsHighPriority;
 	private final int[][][] localRegions;

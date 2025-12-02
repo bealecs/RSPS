@@ -26,6 +26,8 @@ public final class PacketConstants {
 	public static final int ENTER_REGION = 210;
 	
 	public static final int UPDATE_PLAYER_RIGHTS = 127;
+	
+	public static final int UPDATE_NOCLIP = 126;
 
 	public static final int PLAYER_UPDATING = 81;
 

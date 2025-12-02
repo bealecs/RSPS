@@ -475,6 +475,7 @@ public class Player extends Character {
 	private boolean isDying;
 	private boolean regionChange, allowRegionChangePacket;
 	private boolean experienceLocked;
+	private boolean noclip;
 	private final Inventory inventory = new Inventory(this);
 	private final Equipment equipment = new Equipment(this);
 	private final PriceChecker priceChecker = new PriceChecker(this);
@@ -626,6 +627,14 @@ public class Player extends Character {
 
 	public void setExperienceLocked(boolean experienceLocked) {
 		this.experienceLocked = experienceLocked;
+	}
+
+	public boolean isNoclip() {
+		return noclip;
+	}
+
+	public void setNoclip(boolean noclip) {
+		this.noclip = noclip;
 	}
 
 	public PlayerRelations getRelations() {

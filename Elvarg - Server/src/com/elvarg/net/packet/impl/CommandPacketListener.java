@@ -42,7 +42,6 @@ public class CommandPacketListener implements PacketListener {
 			ClanChatManager.sendMessage(player, command.substring(1, command.length()));
 			return;
 		}
-		
 		try {
 		
 			  switch (player.getRights()) {
@@ -51,16 +50,11 @@ public class CommandPacketListener implements PacketListener {
 						player.setExperienceLocked(!player.experienceLocked());
 						player.getPacketSender().sendMessage("Lock: " + player.experienceLocked());
 					}
-				  if (parts[0].equalsIgnoreCase("empty")) { 0
-				  +
-						player.getInventory().resetItems().refreshItems(); 0
-						+
-					} 0
-					+
-				  break; 0
-				  +
-			  case VETERAN: 0
-			  +
+				  if (parts[0].equalsIgnoreCase("empty")) {
+						player.getInventory().resetItems().refreshItems();
+					}
+				  break;
+			  case VETERAN:
 				  if (parts[0].equalsIgnoreCase("bank")) {
 						player.getBank(player.getCurrentBankTab()).open();
 					}
@@ -72,21 +66,8 @@ public class CommandPacketListener implements PacketListener {
 						player.getInventory().resetItems().refreshItems();
 					}
 				  break;
-		case ADMINISTRATOR:
-			if (parts[0].equalsIgnoreCase("interface")) {
-				if (parts.length < 2) {
-					player.getPacketSender().sendMessage("Usage: ::interface <id>");
-					return;
-				}
-				try {
-					int interfaceId = Integer.parseInt(parts[1]);
-					player.getPacketSender().sendInterface(interfaceId);
-					player.getPacketSender().sendMessage("Opening interface: " + interfaceId);
-				} catch (NumberFormatException e) {
-					player.getPacketSender().sendMessage("Invalid interface ID.");
-				}
-			}
-			if (parts[0].equalsIgnoreCase("bank")) {
+			case ADMINISTRATOR:
+				if (parts[0].equalsIgnoreCase("bank")) {
 					player.getBank(player.getCurrentBankTab()).open();
 				}
 				if (parts[0].equalsIgnoreCase("lockxp")) {
@@ -452,19 +433,6 @@ public class CommandPacketListener implements PacketListener {
 				}
 				break;
 			case OWNER:
-				if (parts[0].equalsIgnoreCase("interface")) {
-					if (parts.length < 2) {
-						player.getPacketSender().sendMessage("Usage: ::interface <id>");
-						return;
-					}
-					try {
-						int interfaceId = Integer.parseInt(parts[1]);
-						player.getPacketSender().sendInterface(interfaceId);
-						player.getPacketSender().sendMessage("Opening interface: " + interfaceId);
-					} catch (NumberFormatException e) {
-						player.getPacketSender().sendMessage("Invalid interface ID.");
-					}
-				}
 				if (parts[0].equalsIgnoreCase("lockxp")) {
 					player.setExperienceLocked(!player.experienceLocked());
 					player.getPacketSender().sendMessage("Lock: " + player.experienceLocked());

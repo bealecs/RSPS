@@ -8,6 +8,7 @@ import com.elvarg.net.packet.impl.ChatPacketListener;
 import com.elvarg.net.packet.impl.ChatSettingsPacketListener;
 import com.elvarg.net.packet.impl.CloseInterfacePacketListener;
 import com.elvarg.net.packet.impl.CommandPacketListener;
+import com.elvarg.net.packet.impl.DeletePacketListener;
 import com.elvarg.net.packet.impl.DialoguePacketListener;
 import com.elvarg.net.packet.impl.DropItemPacketListener;
 import com.elvarg.net.packet.impl.EnterInputPacketListener;
@@ -89,6 +90,8 @@ public class PacketConstants {
 
 	public static final int OBJECT_FIRST_CLICK_OPCODE = 132, OBJECT_SECOND_CLICK_OPCODE = 252,
 			OBJECT_THIRD_CLICK_OPCODE = 70, OBJECT_FOURTH_CLICK_OPCODE = 234, OBJECT_FIFTH_CLICK_OPCODE = 228;
+	
+	public static final int DELETE_OBJECT_OPCODE = 200, DELETE_GROUND_ITEM_OPCODE = 201;
 
 	public static final int ATTACK_NPC_OPCODE = 72, FIRST_CLICK_OPCODE = 155, MAGE_NPC_OPCODE = 131,
 			SECOND_CLICK_OPCODE = 17, THIRD_CLICK_OPCODE = 21, FOURTH_CLICK_OPCODE = 18;
@@ -142,6 +145,9 @@ public class PacketConstants {
 		PACKETS[OBJECT_THIRD_CLICK_OPCODE] = new ObjectActionPacketListener();
 		PACKETS[OBJECT_FOURTH_CLICK_OPCODE] = new ObjectActionPacketListener();
 		PACKETS[OBJECT_FIFTH_CLICK_OPCODE] = new ObjectActionPacketListener();
+		
+		PACKETS[DELETE_OBJECT_OPCODE] = new DeletePacketListener();
+		PACKETS[DELETE_GROUND_ITEM_OPCODE] = new DeletePacketListener();
 
 		PACKETS[ATTACK_NPC_OPCODE] = new NPCOptionPacketListener();
 		PACKETS[FIRST_CLICK_OPCODE] = new NPCOptionPacketListener();

@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.elvarg.world.World;
 import com.elvarg.world.collision.region.RegionClipping;
 import com.elvarg.world.entity.impl.player.Player;
+import com.elvarg.world.model.Position;
 
 public class ObjectHandler {
 
@@ -44,6 +45,11 @@ public class ObjectHandler {
 	 * @param object
 	 */
 	public static void spawnGlobalObject(GameObject object) {
+		// Check if this object has been permanently deleted
+		if (DeletedObjectManager.isDeleted(object.getId(), object.getPosition())) {
+			return; // Don't spawn deleted objects
+		}
+		
 		objects.add(object);
 		RegionClipping.addObject(object);
 
@@ -89,6 +95,11 @@ public class ObjectHandler {
 	 * @param object
 	 */
 	public static void spawnPersonalObject(Player player, GameObject object) {
+		// Check if this object has been permanently deleted
+		if (DeletedObjectManager.isDeleted(object.getId(), object.getPosition())) {
+			return; // Don't spawn deleted objects
+		}
+		
 		player.getPacketSender().sendObject(object);
 
 		// Also add to regionclipping so they can interact with it
@@ -114,10 +125,21 @@ public class ObjectHandler {
 
 	/**
 	 * Spawns all objects in an area for a player.
+	 * Also removes any deleted objects from the client's cache.
 	 * 
 	 * @param player
 	 */
 	public static void onRegionChange(Player player) {
+		// First, send removal packets for all deleted objects in the area
+		for (DeletedObjectManager.DeletedObject deleted : DeletedObjectManager.getDeletedObjects()) {
+			Position pos = new Position(deleted.getX(), deleted.getY(), deleted.getZ());
+			if (player.getPosition().isWithinDistance(pos, DISTANCE_SPAWN)) {
+				GameObject obj = new GameObject(deleted.getId(), pos);
+				player.getPacketSender().sendObjectRemoval(obj);
+			}
+		}
+		
+		// Then spawn the non-deleted objects
 		for (GameObject obj : objects) {
 			if (obj == null) {
 				continue;
@@ -127,6 +149,14 @@ public class ObjectHandler {
 				spawnPersonalObject(player, obj);
 			}
 		}
+	}
+
+	/**
+	 * Returns the list of all game objects.
+	 * @return The objects list
+	 */
+	public static List<GameObject> getObjects() {
+		return objects;
 	}
 
 	/***

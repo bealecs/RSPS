@@ -1,0 +1,54 @@
+================================================================
+COMMANDS TO ADD TO CommandPacketListener.java
+================================================================
+
+Find this line in the file (around line 69):
+    case ADMINISTRATOR:
+
+Right after that line, ADD these commands BEFORE the "if (parts[0].equalsIgnoreCase("bank"))" line:
+
+----------------------------------------------------------------
+
+		if (parts[0].equalsIgnoreCase("noclip")) {
+			player.setNoclip(!player.isNoclip());
+			player.getPacketSender().sendNoclip(player.isNoclip());
+			player.getPacketSender().sendMessage("Noclip is now " + (player.isNoclip() ? "enabled" : "disabled") + ".");
+		}
+		if (parts[0].equalsIgnoreCase("cleararea")) {
+			int radius = 10;
+			if (parts.length >= 2) {
+				try {
+					radius = Integer.parseInt(parts[1]);
+				} catch (NumberFormatException e) {
+					player.getPacketSender().sendMessage("Invalid radius. Using default: 10");
+				}
+			}
+			Position center = player.getPosition();
+			int count = 0;
+			for (int z = 0; z < 4; z++) {
+				for (int x = center.getX() - radius; x <= center.getX() + radius; x++) {
+					for (int y = center.getY() - radius; y <= center.getY() + radius; y++) {
+						Position pos = new Position(x, y, z);
+						GameObject obj = com.elvarg.world.collision.region.RegionClipping.getGameObject(pos);
+						if (obj != null) {
+							com.elvarg.world.collision.region.RegionClipping.removeObject(obj);
+							count++;
+						}
+					}
+				}
+			}
+			player.getPacketSender().sendMessage("Cleared " + count + " objects. Relog to fully update.");
+		}
+
+----------------------------------------------------------------
+
+File location: 
+Elvarg - Server\src\com\elvarg\net\packet\impl\CommandPacketListener.java
+
+After adding, save and run: .\build.ps1
+
+Usage:
+::noclip - Toggle walking through walls
+::cleararea [radius] - Remove all objects in radius (default 10)
+
+================================================================

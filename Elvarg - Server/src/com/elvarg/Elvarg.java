@@ -97,6 +97,9 @@ public class Elvarg {
 			// OTHERS
 			serviceLoader.execute(() -> ClanChatManager.init());
 			serviceLoader.execute(() -> CombatPoisonData.init());
+			
+			// Load deleted objects
+			serviceLoader.execute(() -> com.elvarg.world.entity.impl.object.DeletedObjectManager.load());
 
 			// Shutdown the loader
 			serviceLoader.shutdown();
